@@ -1,12 +1,13 @@
 using API.Dtos.User;
 
 using API.Models;
+using API.Utilities;
 
 namespace API.Mappers;
 
 public static class UserMapper
 {
-        public static UserResponseDto ToUserResponseDto(this User userModel)
+        public static UserResponseDto ToUserResponseDto(this Users userModel)
         {
             return new UserResponseDto
             {
@@ -17,25 +18,54 @@ public static class UserMapper
                 UserType = userModel.UserType,
                 IsVerified = userModel.IsVerified,
                 Status = userModel.Status,
-                Partner = userModel.Partner,
+                Partner = userModel.Partner?.ToPartnerResponseDto(),
                 CreatedAt = userModel.CreatedAt,
                 UpdatedAt = userModel.UpdatedAt
             };
         }
 
 
-        public static User ToUserRequestDto(this UserRequestDto userRequest)
+        public static Users ToUserRequestDto(this UserRequestDto userRequest)
         {
-            return new User
+            return new Users
             {
                 FullName = userRequest.FullName,
                 Email = userRequest.Email,
                 PhoneNumber = userRequest.PhoneNumber,
                 Password = userRequest.Password,
                 UserType = userRequest.UserType,
-                Partner = userRequest.Partner,
+                VerificationCode = GenerateCode.GenerateRandomCode(6),
+                Partner = userRequest.Partner?.ToPartnerDto(),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
+            };
+        }
+        
+        
+        public static Partner ToPartnerDto(this PartnerDto partnerDto)
+        {
+            return new Partner
+            {
+                
+                BusinessNumber = partnerDto.BusinessNumber,
+                Logo = partnerDto.Logo,
+                Address = partnerDto.Address,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+        }
+        
+        
+        public static PartnerResponseDto ToPartnerResponseDto(this Partner partner)
+        {
+            return new PartnerResponseDto
+            {
+                Id = partner.Id,
+                BusinessNumber = partner.BusinessNumber,
+                Logo = partner.Logo,
+                Address = partner.Address,
+                CreatedAt = partner.CreatedAt,
+                UpdatedAt = partner.UpdatedAt
             };
         }
 

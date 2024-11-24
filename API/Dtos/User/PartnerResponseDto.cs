@@ -1,18 +1,13 @@
-using System.ComponentModel.DataAnnotations;
 
-namespace API.Models;
+namespace API.Dtos.User;
 
-public class Partner
+public class PartnerResponseDto
 {
-   
-    [Key]
+    
     public int Id { get; set; }
 
-    public Guid? Uuid { get; set; } = System.Guid.NewGuid();
-    public int? UserId { get; set; }
-
     //Navigation Property
-    public Users? User { get; set; }
+    public UserResponseDto?  User { get; set; }
 
     public int BusinessNumber { get; set; }
 
@@ -23,5 +18,4 @@ public class Partner
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
- 
 }

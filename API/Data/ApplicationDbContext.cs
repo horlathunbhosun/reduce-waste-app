@@ -11,15 +11,27 @@ public class ApplicationDbContext : DbContext
         
     }
     
-    public DbSet<User> User { get; set; }
+    public DbSet<Users> User { get; set; }
 
     public DbSet<Partner> Partner { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<Users>()
             .Property(u => u.UserType)
             .HasConversion<string>();
+        
+        modelBuilder.Entity<Users>()
+            .Property(u => u.Status)
+            .HasConversion<string>();
+        
+        modelBuilder.Entity<Users>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        base.OnModelCreating(modelBuilder);
     }
+    
+  
     
     
     

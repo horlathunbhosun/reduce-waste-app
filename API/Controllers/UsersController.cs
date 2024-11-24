@@ -20,9 +20,11 @@ public class UsersController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateUsers([FromBody] UserRequestDto userRequest)
     {
-        await _userService.CreateUser(userRequest.ToUserRequestDto());
-
-        return Ok("User Created Successfully");
+        bool isPartner = userRequest.Partner != null;
+        Console.WriteLine($"Is Partner: {isPartner}");
+        var user =  await _userService.CreateUser(userRequest.ToUserRequestDto(), isPartner);
+        
+        return Ok(new {Message= "User Created Successfully", Data = user.ToUserResponseDto()});
     }
 
 }

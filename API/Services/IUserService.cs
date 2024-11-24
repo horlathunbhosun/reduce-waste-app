@@ -4,6 +4,6 @@ using API.Models;
 
 public interface IUserService
 {
-    Task CreateUser(User user);
+    Task<Users> CreateUser(Users user, bool isPartner);
 
 }

@@ -18,7 +18,7 @@ public class UserResponseDto
 
     public Status Status { get; set; }
 
-    public Partner? Partner { get; set; }
+    public PartnerResponseDto? Partner { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

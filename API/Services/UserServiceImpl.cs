@@ -6,15 +6,28 @@ namespace API.Services;
 public class UserServiceImpl : IUserService
 {
     private readonly IUserRepository _userRepository;
-
-    public UserServiceImpl(IUserRepository userRepository)
+    private readonly IPartnerRepository _partnerRepository;
+    public UserServiceImpl(IUserRepository userRepository, IPartnerRepository partnerRepository)
     {
         _userRepository = userRepository;
+        _partnerRepository = partnerRepository;
     }
 
-    public Task CreateUser(User user)
+    public async Task<Users> CreateUser(Users user, bool isPartner)
     {
-        _userRepository.CreateUser(user);
-        return Task.CompletedTask;
+       var userObject = await  _userRepository.CreateUser(user);
+       Console.WriteLine($"User Created Successfully: {userObject.Id}");
+       if (isPartner)
+       {
+           Partner partner = new Partner
+           {
+               UserId = userObject.Id,
+               BusinessNumber = user.Partner!.BusinessNumber,
+               Logo = user.Partner!.Logo,
+               Address = user.Partner!.Address,
+           };
+            await  _partnerRepository.CreatePartner(partner);
+       }
+       return userObject;
     }
 }
