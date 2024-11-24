@@ -1,6 +1,6 @@
 using API.Dtos.User;
 using API.Mappers;
-using API.Services;
+using API.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

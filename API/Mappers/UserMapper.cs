@@ -11,7 +11,7 @@ public static class UserMapper
         {
             return new UserResponseDto
             {
-                Id = userModel.Id,
+                Id = userModel.Uuid,
                 FullName = userModel.FullName,
                 Email = userModel.Email,
                 PhoneNumber = userModel.PhoneNumber,
@@ -60,7 +60,7 @@ public static class UserMapper
         {
             return new PartnerResponseDto
             {
-                Id = partner.Id,
+                Id = partner.Uuid,
                 BusinessNumber = partner.BusinessNumber,
                 Logo = partner.Logo,
                 Address = partner.Address,

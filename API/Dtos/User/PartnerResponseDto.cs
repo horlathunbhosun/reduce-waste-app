@@ -4,7 +4,7 @@ namespace API.Dtos.User;
 public class PartnerResponseDto
 {
     
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     //Navigation Property
     public UserResponseDto?  User { get; set; }

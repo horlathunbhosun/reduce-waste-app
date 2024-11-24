@@ -9,7 +9,7 @@ public class Users
     [Key]
     public int Id { get; set; }
     
-    public Guid? Uuid { get; set; } = System.Guid.NewGuid();
+    public Guid Uuid { get; set; } = System.Guid.NewGuid();
 
     public required string FullName { get; set; }
     

@@ -1,6 +1,8 @@
 using API.Data;
 using API.Repositories;
-using API.Services;
+using API.Services.UserService;
+using API.Services.Email;
+using API.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,10 +25,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseMySql(connectionString, mysqlServerVersion);
 });
 
+
+
 //uncomment if you are using SqlServer
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
+
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailServiceImpl>();
 // builder.Services.AddDbContext<ApplicationDbContext>(options => {
 //     var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
 //     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);

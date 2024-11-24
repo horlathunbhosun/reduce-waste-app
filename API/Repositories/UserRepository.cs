@@ -15,22 +15,22 @@ public class UserRepository : IUserRepository
         
     public async Task<Users?> FindUserByPhoneNumber(string phoneNumber)
     {
-        return await _context.User.FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
+        return await _context.Users.FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
     }
 
     public async Task<Users?> FindUserByVerificationCode(string verificationCode)
     {
-        return await _context.User.FirstOrDefaultAsync(p => p.VerificationCode == verificationCode);
+        return await _context.Users.FirstOrDefaultAsync(p => p.VerificationCode == verificationCode);
     }
 
     public async Task<Users?> UserByEmail(string email)
     {
-        return await _context.User.FirstOrDefaultAsync(e => e.Email == email);
+        return await _context.Users.FirstOrDefaultAsync(e => e.Email == email);
     }
 
     public async Task<Users?> UserById(int id)
     {
-        return await _context.User.FindAsync(id);
+        return await _context.Users.FindAsync(id);
     }
 
     public async Task<Users> CreateUser(Users user)
@@ -41,7 +41,7 @@ public class UserRepository : IUserRepository
         // await _context.SaveChangesAsync();
         
         // Check if a user with the same UserId already exists
-        var existingUser = await _context.User
+        var existingUser = await _context.Users
             .Include(u => u.Partner)
             .FirstOrDefaultAsync(u => u.Id == user.Id);
 
@@ -53,7 +53,7 @@ public class UserRepository : IUserRepository
         }
 
         // Add the new user
-        _context.User.Add(user);
+        _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return user;
         

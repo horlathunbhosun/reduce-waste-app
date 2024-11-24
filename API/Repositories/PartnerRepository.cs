@@ -14,12 +14,12 @@ public class PartnerRepository : IPartnerRepository
 
     public async Task<Partner?> FindPartnerById(int id)
     {
-        return await _context.Partner.FindAsync(id);
+        return await _context.Partners.FindAsync(id);
     }
     
     public async Task<Partner> CreatePartner(Partner partner)
     {
-        await _context.Partner.AddAsync(partner);
+        await _context.Partners.AddAsync(partner);
         await _context.SaveChangesAsync();
         Console.WriteLine($"Partner Created Successfully: {partner.Id}");
         return partner;

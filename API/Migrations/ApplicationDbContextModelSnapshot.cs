@@ -58,10 +58,10 @@ namespace API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Partner");
+                    b.ToTable("Partners");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("API.Models.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,19 +113,19 @@ namespace API.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("API.Models.Partner", b =>
                 {
-                    b.HasOne("API.Models.User", "User")
+                    b.HasOne("API.Models.Users", "User")
                         .WithOne("Partner")
                         .HasForeignKey("API.Models.Partner", "UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("API.Models.Users", b =>
                 {
                     b.Navigation("Partner");
                 });

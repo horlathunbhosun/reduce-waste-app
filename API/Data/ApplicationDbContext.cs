@@ -11,9 +11,9 @@ public class ApplicationDbContext : DbContext
         
     }
     
-    public DbSet<Users> User { get; set; }
+    public DbSet<Users> Users { get; set; }
 
-    public DbSet<Partner> Partner { get; set; }
+    public DbSet<Partner> Partners { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Users>()

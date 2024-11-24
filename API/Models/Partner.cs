@@ -8,7 +8,7 @@ public class Partner
     [Key]
     public int Id { get; set; }
 
-    public Guid? Uuid { get; set; } = System.Guid.NewGuid();
+    public Guid Uuid { get; set; } = System.Guid.NewGuid();
     public int? UserId { get; set; }
 
     //Navigation Property

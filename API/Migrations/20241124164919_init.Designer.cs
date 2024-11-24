@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241124120205_AddValidationsAndConstraintToModel")]
-    partial class AddValidationsAndConstraintToModel
+    [Migration("20241124164919_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,9 +43,6 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid?>("Guid")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Logo")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -56,15 +53,18 @@ namespace API.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("Uuid")
+                        .HasColumnType("char(36)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Partner");
+                    b.ToTable("Partners");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("API.Models.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,9 +82,6 @@ namespace API.Migrations
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<Guid?>("Guid")
-                        .HasColumnType("char(36)");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("tinyint(1)");
@@ -108,6 +105,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<Guid?>("Uuid")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("VerificationCode")
                         .HasColumnType("longtext");
 
@@ -116,19 +116,19 @@ namespace API.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("API.Models.Partner", b =>
                 {
-                    b.HasOne("API.Models.User", "User")
+                    b.HasOne("API.Models.Users", "User")
                         .WithOne("Partner")
                         .HasForeignKey("API.Models.Partner", "UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("API.Models.Users", b =>
                 {
                     b.Navigation("Partner");
                 });
