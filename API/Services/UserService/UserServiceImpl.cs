@@ -1,3 +1,5 @@
+using API.Enums;
+using API.Exceptions;
 using API.Models;
 using API.Repositories;
 using API.Services.Email;
@@ -49,5 +51,28 @@ public class UserServiceImpl : IUserService
      
 
        return userObject;
+    }
+
+
+    public async Task<Users> GetUserByVerificationCode(string verificationCode)
+    {
+        var user = await _userRepository.FindUserByVerificationCode(verificationCode);
+        if (user == null)
+        {
+            throw new NotFoundException($"Verification code {verificationCode} not valid");
+        }
+
+        if (user.VerificationCode.Equals(verificationCode))
+        {
+
+            user.VerificationCode = "";
+            user.Status = Status.Activated;
+            user.IsVerified = true;
+            
+            var updatedUser = await _userRepository.UpdateUser(user);
+            return updatedUser;
+        }
+
+        return user;
     }
 }

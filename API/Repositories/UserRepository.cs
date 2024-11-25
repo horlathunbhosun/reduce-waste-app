@@ -32,6 +32,7 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.FindAsync(id);
     }
+    
 
     public async Task<Users> CreateUser(Users user)
     {
@@ -59,6 +60,25 @@ public class UserRepository : IUserRepository
         
         
         
+    }
+    
+    public async Task<Users> UpdateUser(Users user)
+    {
+        // Check if a user with the same UserId already exists
+        var existingUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        if (existingUser == null)
+        {
+            // Handle the case where the user does not exist
+            // For example, you can throw an exception
+            throw new InvalidOperationException("The user does not exist.");
+        }
+
+        // Update the user
+        _context.Entry(existingUser).CurrentValues.SetValues(user);
+        await _context.SaveChangesAsync();
+        return user;
     }
     
  

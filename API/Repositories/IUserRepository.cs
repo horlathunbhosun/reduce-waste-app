@@ -14,4 +14,6 @@ public interface IUserRepository
 
     Task<Users> CreateUser(Users user);
     
+    Task<Users> UpdateUser(Users user);
+    
 }
