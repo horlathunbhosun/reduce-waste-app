@@ -22,34 +22,37 @@ public class UsersController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateUsers([FromBody] UserRequestDto userRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            var responseEr = HanldeError("Validation failed", string.Join("; ", errors), StatusCodes.Status400BadRequest );
+            return StatusCode(responseEr.StatusCode, responseEr);
+        }
         bool isPartner = userRequest.Partner != null;
-        Console.WriteLine($"Is Partner: {isPartner}");
-        var user =  await _userService.CreateUser(userRequest.ToUserRequestDto(), isPartner);
-        
-        return Ok(new {Message= "User Created Successfully", Data = user.ToUserResponseDto()});
+        var response =  await _userService.CreateUser(userRequest.ToUserRequestDto(), isPartner);
+        return StatusCode(response.StatusCode, response);
     }
     
     
     [HttpGet("verify/{verificationCode}")]
-    public async Task<IActionResult> VerifyUser([FromRoute]string verificationCode)
+    public async Task<IActionResult> VerifyUser([FromRoute] string verificationCode)
     {
-        try
+        if (string.IsNullOrEmpty(verificationCode))
         {
-            var user = await _userService.GetUserByVerificationCode(verificationCode);
-            Console.WriteLine($"User Verified Successfully: {user}");
-            return Ok(new SuccessResponse("User Verified Successfully", user.ToUserResponseDto(), StatusCodes.Status200OK));
-
-        }catch(NotFoundException e)
-        {
-            return NotFound(new ErrorResponse("Verification code is invalid", e.Message, StatusCodes.Status404NotFound));
+            var responseEr = HanldeError("Validation failed", "Verification code is required", StatusCodes.Status400BadRequest);
+            return StatusCode(responseEr.StatusCode, responseEr);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            
-            return StatusCode(500, new ErrorResponse("An unexpected error occurred", e.Message, StatusCodes.Status500InternalServerError));
-
-        }
+        var response = await _userService.VerifyUserAsync(verificationCode);
+        return StatusCode(response.StatusCode, response);
     }
+
+
+    private GenericResponse HanldeError(string message, string error, int statusCode)
+    {
+     return   GenericResponse.FromError(
+            new ErrorResponse(message, error,
+                statusCode), statusCode);
+    }
+    
 
 }
