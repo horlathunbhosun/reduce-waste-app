@@ -1,9 +1,11 @@
 using API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<Users>
 {
 
     public ApplicationDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
@@ -16,6 +18,23 @@ public class ApplicationDbContext : DbContext
     public DbSet<Partner> Partners { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
+        List<IdentityRole> roles = new List<IdentityRole>
+        {
+            new IdentityRole {Name = "Admin", NormalizedName = "ADMIN"},
+            new IdentityRole {Name = "Partner", NormalizedName = "PARTNER"},
+            new IdentityRole {Name = "User", NormalizedName = "USER"}
+        };
+
+        modelBuilder.Entity<IdentityRole>().HasData(roles);
+        
+        modelBuilder.Entity<Users>()
+            .HasOne(u => u.Partner)
+            .WithOne(p => p.User)
+            .HasForeignKey<Partner>(p => p.UserId);
+        
+        
         modelBuilder.Entity<Users>()
             .Property(u => u.UserType)
             .HasConversion<string>();
@@ -28,7 +47,8 @@ public class ApplicationDbContext : DbContext
             .HasIndex(u => u.Email)
             .IsUnique();
 
-        base.OnModelCreating(modelBuilder);
+        
+       
     }
     
   

@@ -1,11 +1,15 @@
 using API.Dtos.Response;
+using API.Dtos.User;
 using API.Enums;
 using API.Exceptions;
 using API.Mappers;
 using API.Models;
 using API.Repositories;
 using API.Services.Email;
+using API.Services.Token;
 using API.Services.UserService;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.UserService;
 
@@ -14,14 +18,21 @@ public class UserServiceImpl : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IPartnerRepository _partnerRepository;
     private readonly IEmailService _emailService;
-    public UserServiceImpl(IUserRepository userRepository, IPartnerRepository partnerRepository, IEmailService emailService)
+    private readonly UserManager<Users> _userManager;
+    private readonly SignInManager<Users> _signinManager;
+    private readonly ITokenService _tokenService;
+
+    public UserServiceImpl(IUserRepository userRepository, IPartnerRepository partnerRepository, IEmailService emailService, UserManager<Users> userManager, SignInManager<Users> signinManager,ITokenService tokenService)
     {
         _userRepository = userRepository;
         _partnerRepository = partnerRepository;
         _emailService = emailService;
+        _userManager = userManager;
+        _signinManager = signinManager;
+        _tokenService = tokenService;
     }
 
-    public async Task<GenericResponse> CreateUser(Users user, bool isPartner)
+    public async Task<GenericResponse> CreateUser(Users user, bool isPartner, string password)
     {
         try
         {
@@ -33,7 +44,7 @@ public class UserServiceImpl : IUserService
             }
             
             
-            var userObject = await  _userRepository.CreateUser(user);
+            var userObject = await  _userRepository.CreateUser(user,password);
             Console.WriteLine($"User Created Successfully: {userObject.Id}");
             if (isPartner)
             {
@@ -59,7 +70,10 @@ public class UserServiceImpl : IUserService
 
             }
        
-     
+            var roles = await _userManager.GetRolesAsync(userObject);
+            var userResponseDto = userObject.ToUserResponseDto();
+            userResponseDto.Roles = roles.ToList();
+            
             var success = new SuccessResponse("User Created Successfully",
                 userObject.ToUserResponseDto(), StatusCodes.Status200OK);
             return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
@@ -74,50 +88,91 @@ public class UserServiceImpl : IUserService
 
 
     public async Task<Users> GetUserByVerificationCode(string verificationCode)
-    {
-        var user = await _userRepository.FindUserByVerificationCode(verificationCode);
-        if (user == null)
-        {
-            throw new NotFoundException($"Verification code {verificationCode} not valid");
-        }
-        if (user.VerificationCode.Equals(verificationCode))
-        {
-            user.VerificationCode = "";
-            user.Status = Status.Activated;
-            user.IsVerified = true;
-            var updatedUser = await _userRepository.UpdateUser(user);
-            return updatedUser;
-        }
+     {
+         var user = await _userRepository.FindUserByVerificationCode(verificationCode);
+         if (user == null)
+         {
+             throw new NotFoundException($"Verification code {verificationCode} not valid");
+         }
+         if (user.VerificationCode.Equals(verificationCode))
+         {
+             user.VerificationCode = "";
+             user.Status = Status.Activated;
+             user.IsVerified = true;
+             var updatedUser = await _userRepository.UpdateUser(user);
+             return updatedUser;
+         }
+ 
+         return user;
+     }
+     
+     public async Task<GenericResponse> VerifyUserAsync(string verificationCode)
+     {
+         try
+         {
+             var user = await GetUserByVerificationCode(verificationCode);
+             var success = new SuccessResponse("User Verified Successfully",
+                 user.ToUserResponseDto(), StatusCodes.Status200OK);
+             return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
 
-        return user;
-    }
-    
-    public async Task<GenericResponse> VerifyUserAsync(string verificationCode)
-    {
-        try
-        {
-            var user = await GetUserByVerificationCode(verificationCode);
-            var success = new SuccessResponse("User Verified Successfully",
-                user.ToUserResponseDto(), StatusCodes.Status200OK);
-            return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
+         }
+         catch (NotFoundException e)
+         {
+             return GenericResponse.FromError(new ErrorResponse("Verification code is invalid", e.Message,
+                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+         }
+         catch (Exception e)
+         {
+             Console.WriteLine(e);
+             return GenericResponse.FromError(
+                 new ErrorResponse("An unexpected error occurred", e.Message,
+                     StatusCodes.Status500InternalServerError), StatusCodes.Status500InternalServerError);
+         }
 
-        }
-        catch (NotFoundException e)
-        {
-            return GenericResponse.FromError(new ErrorResponse("Verification code is invalid", e.Message,
-                StatusCodes.Status404NotFound),StatusCodes.Status404NotFound);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return GenericResponse.FromError(new ErrorResponse("An unexpected error occurred", e.Message, StatusCodes.Status500InternalServerError),StatusCodes.Status500InternalServerError);
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
+     
+     }
+
+     public async Task<GenericResponse> LoginUser(LoginRequestDto loginRequestDto)
+     {
+         var userCheck = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginRequestDto.Email.ToLower());
+         if (userCheck == null)
+         {
+             return GenericResponse.FromError(new ErrorResponse("Invalid Email address ", "Invalid Email Address",
+                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+         }
+
+         var checkPassword = await _signinManager.CheckPasswordSignInAsync(userCheck, loginRequestDto.Password, false);
+         if (!checkPassword.Succeeded)
+         {
+             return GenericResponse.FromError(new ErrorResponse("Invalid Email address and password ", "Invalid Email address and password",
+                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+         }
+
+         var checkUserVerified = userCheck is { IsVerified: true, Status: Status.Activated };
+         if (checkUserVerified == false) 
+         {
+             return GenericResponse.FromError(new ErrorResponse("Account not verified ", "You need to be verified to login",
+                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound); 
+         }
+
+         var createToken = _tokenService.CreateToken(userCheck);
+
+         var jwtToken = new JwtToken
+         {
+             Token = createToken.Token,
+             RefreshToken = createToken.RefreshToken,
+             ExpiryTime = createToken.ExpiryTime,
+             UserResponseDto = userCheck.ToUserResponseDto()
+         };
+         var success = new SuccessResponse("Login Successful", 
+             jwtToken  , StatusCodes.Status200OK);
+         return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
+     }
 }
+    
+    
+    
+    
+    
+    
+    

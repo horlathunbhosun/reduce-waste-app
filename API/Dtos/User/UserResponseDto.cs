@@ -5,14 +5,14 @@ using API.Models;
 
 public class UserResponseDto
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public required string FullName { get; set; }
     public required string Email { get; set; }
 
 
     public string PhoneNumber { get; set; } = string.Empty;
 
-    public UserType UserType { get; set; }
+    public string? UserType { get; set; }
 
     public bool IsVerified { get; set; }
 
@@ -23,4 +23,7 @@ public class UserResponseDto
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
+    
+    public List<string> Roles { get; set; } = new List<string>();
+
 }

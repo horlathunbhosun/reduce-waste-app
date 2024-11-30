@@ -1,5 +1,6 @@
 using API.Data;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories;
@@ -7,10 +8,13 @@ namespace API.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
+
+    private readonly UserManager<Users> _userManager;
     
-    public UserRepository(ApplicationDbContext context)
+    public UserRepository(ApplicationDbContext context, UserManager<Users> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }       
         
     public async Task<Users?> FindUserByPhoneNumber(string phoneNumber)
@@ -34,13 +38,10 @@ public class UserRepository : IUserRepository
     }
     
 
-    public async Task<Users> CreateUser(Users user)
+    public async Task<Users> CreateUser(Users user, string password)
     {
-        // await _context.User.AddAsync(user);
-        // await _context.SaveChangesAsync();
-        // Console.WriteLine($"User Created Successfully: {user.Id}");
-        // await _context.SaveChangesAsync();
-        
+    
+        Console.WriteLine($"users {user}");
         // Check if a user with the same UserId already exists
         var existingUser = await _context.Users
             .Include(u => u.Partner)
@@ -53,10 +54,32 @@ public class UserRepository : IUserRepository
             throw new InvalidOperationException("A user with the same UserId already exists.");
         }
 
-        // Add the new user
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return user;
+        var userCreation = await _userManager.CreateAsync(user, password);
+        
+        if (userCreation.Succeeded)
+        {
+            var roleCreation = await _userManager.AddToRoleAsync(user, user.UserType.ToString());
+
+            if (roleCreation.Succeeded)
+            {
+                return user;
+            }
+            else
+            {
+                throw new Exception("Something went wrong while creating the role, try again");
+            }
+        }
+        else
+        {
+            var errorMessages = userCreation.Errors.Select(e => e.Description).ToList();
+
+            throw new Exception($"Something went wrong creating user: {string.Join(", ", errorMessages)}");
+        }
+
+        // // Add the new user
+        // _context.Users.Add(user);
+        // await _context.SaveChangesAsync();
+        // return user;
         
         
         
@@ -81,6 +104,8 @@ public class UserRepository : IUserRepository
         return user;
     }
     
+    
+    //AsQueryable 
  
 
 }

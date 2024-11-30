@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
             return StatusCode(responseEr.StatusCode, responseEr);
         }
         bool isPartner = userRequest.Partner != null;
-        var response =  await _userService.CreateUser(userRequest.ToUserRequestDto(), isPartner);
+        var response =  await _userService.CreateUser(userRequest.ToUserRequestDto(), isPartner, userRequest.Password);
         return StatusCode(response.StatusCode, response);
     }
     
@@ -46,6 +46,21 @@ public class UsersController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+    {
+        
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            var responseEr = HanldeError("Validation failed", string.Join("; ", errors), StatusCodes.Status400BadRequest );
+            return StatusCode(responseEr.StatusCode, responseEr);
+        }
+
+        var response = await _userService.LoginUser(loginRequestDto);
+        return StatusCode(response.StatusCode, response);
+    }
+
 
     private GenericResponse HanldeError(string message, string error, int statusCode)
     {
@@ -53,6 +68,8 @@ public class UsersController : ControllerBase
             new ErrorResponse(message, error,
                 statusCode), statusCode);
     }
+    
+    //using from FromQuery if you want to filter 
     
 
 }

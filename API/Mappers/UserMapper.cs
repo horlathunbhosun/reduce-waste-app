@@ -11,13 +11,11 @@ public static class UserMapper
         {
             return new UserResponseDto
             {
-                Id = userModel.Uuid,
                 FullName = userModel.FullName,
                 Email = userModel.Email,
                 PhoneNumber = userModel.PhoneNumber,
                 UserType = userModel.UserType,
                 IsVerified = userModel.IsVerified,
-                Status = userModel.Status,
                 Partner = userModel.Partner?.ToPartnerResponseDto(),
                 CreatedAt = userModel.CreatedAt,
                 UpdatedAt = userModel.UpdatedAt
@@ -32,12 +30,12 @@ public static class UserMapper
                 FullName = userRequest.FullName,
                 Email = userRequest.Email,
                 PhoneNumber = userRequest.PhoneNumber,
-                Password = userRequest.Password,
+                UserName = userRequest.UserName,
                 UserType = userRequest.UserType,
                 VerificationCode = GenerateCode.GenerateRandomCode(6),
                 Partner = userRequest.Partner?.ToPartnerDto(),
                 CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
             };
         }
         
