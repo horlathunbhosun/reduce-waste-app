@@ -16,6 +16,12 @@ public class ApplicationDbContext : IdentityDbContext<Users>
     public DbSet<Users> Users { get; set; }
 
     public DbSet<Partner> Partners { get; set; }
+    
+    public DbSet<Product> Products { get; set; }
+    
+    public DbSet<MagicBag> MagicBags { get; set; }
+    
+    public DbSet<MagicBagItem> MagicBagItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
