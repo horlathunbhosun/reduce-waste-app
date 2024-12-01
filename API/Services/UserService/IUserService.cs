@@ -15,4 +15,6 @@ public interface IUserService
 
     Task<GenericResponse> LoginUser(LoginRequestDto requestDto);
 
+    //Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest);
+
 }

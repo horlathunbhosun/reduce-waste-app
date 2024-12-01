@@ -1,3 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using API.Dtos.Response;
 using API.Dtos.User;
 using API.Enums;
@@ -10,6 +13,7 @@ using API.Services.Token;
 using API.Services.UserService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services.UserService;
 
@@ -168,6 +172,26 @@ public class UserServiceImpl : IUserService
              jwtToken  , StatusCodes.Status200OK);
          return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
      }
+
+     // public async Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+     // {
+     //     var principal = _tokenService.GetPrincipalFromExpiredToken(refreshTokenRequest.Token);
+     //     if (principal == null)
+     //     {
+     //         throw new NotFoundException("Invalid refresh token");
+     //     }
+     //
+     //     var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
+     //     if (user == null || user.RefreshToken != request.RefreshToken)
+     //     {
+     //         return BadRequest("Invalid refresh token");
+     //     }
+     //
+     //     var newJwtToken = _tokenService.CreateToken(user);
+     // }
+     
+     
+    
 }
     
     
