@@ -1,4 +1,5 @@
 using API.Data;
+using API.Dtos.Response;
 using API.Models;
 using API.Repositories;
 using API.Services.UserService;
@@ -13,13 +14,14 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers()  
     .AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
     options.JsonSerializerOptions.WriteIndented = true; // Optional for pretty formatting
 });
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -29,6 +31,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => {
     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);
     options.UseMySql(connectionString, mysqlServerVersion);
 });
+//uncomment if you are using SqlServe
+// builder.Services.AddDbContext<ApplicationDbContext>(options => {
+//     var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
+//     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);
+//     options.UseMySql(connectionString, mysqlServerVersion);
+// });
+
 
 builder.Services.AddIdentity<Users, IdentityRole>(options =>
 {
@@ -47,8 +56,10 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = 
-        options.DefaultAuthenticateScheme =
-            options.DefaultScheme =
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultForbidScheme = 
                     options.DefaultSignInScheme =
                         options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,7 +75,28 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:Audience"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
+            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]!))
+        
+        
+    };
+    
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            context.NoResult();
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+            GenericResponse response = GenericResponse.FromError(new ErrorResponse("Invalid Token", "Unauthorized", StatusCodes.Status401Unauthorized), StatusCodes.Status401Unauthorized);
+            return context.Response.WriteAsJsonAsync(response);
+        },
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+             GenericResponse response = GenericResponse.FromError(new ErrorResponse("Unauthorized", "Unauthorized", StatusCodes.Status401Unauthorized), StatusCodes.Status401Unauthorized);          
+             return context.Response.WriteAsJsonAsync(response);
+        }
     };
 });
 
@@ -76,13 +108,12 @@ builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailServiceImpl>();
 
-//uncomment if you are using SqlServer
-
-// builder.Services.AddDbContext<ApplicationDbContext>(options => {
-//     var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
-//     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);
-//     options.UseMySql(connectionString, mysqlServerVersion);
-// });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy=> policy.RequireRole("Admin"));
+    options.AddPolicy("User", policy=> policy.RequireRole("User"));
+    options.AddPolicy("Partner", policy=> policy.RequireRole("Partner"));
+});
 
 var app = builder.Build();
 
@@ -93,11 +124,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
+
 app.MapControllers();
+
+
 app.Run();
 
 

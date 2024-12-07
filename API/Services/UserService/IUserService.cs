@@ -14,6 +14,9 @@ public interface IUserService
     Task<GenericResponse> VerifyUserAsync(string verificationCode);
 
     Task<GenericResponse> LoginUser(LoginRequestDto requestDto);
+    
+    Task<GenericResponse> UpdateUser(UpdateUserRequestDto user, bool isPartner);
+    
 
     //Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest);
 

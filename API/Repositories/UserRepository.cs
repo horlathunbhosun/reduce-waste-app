@@ -32,7 +32,7 @@ public class UserRepository : IUserRepository
         return await _context.Users.FirstOrDefaultAsync(e => e.Email == email);
     }
 
-    public async Task<Users?> UserById(int id)
+    public async Task<Users?> UserById(string id)
     {
         return await _context.Users.FindAsync(id);
     }

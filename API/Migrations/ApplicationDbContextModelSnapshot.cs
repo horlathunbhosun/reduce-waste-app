@@ -22,6 +22,31 @@ namespace API.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("API.Models.MagicBag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<double>("BagPrice")
+                        .HasColumnType("double(12,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("PartnerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("MagicBags");
+                });
+
             modelBuilder.Entity("API.Models.Partner", b =>
                 {
                     b.Property<int>("Id")
@@ -59,6 +84,56 @@ namespace API.Migrations
                         .IsUnique();
 
                     b.ToTable("Partners");
+                });
+
+            modelBuilder.Entity("API.Models.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("API.Models.ProductMagicBagItem", b =>
+                {
+                    b.Property<Guid?>("MagicBagId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("MagicBagId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductMagicBagItems");
                 });
 
             modelBuilder.Entity("API.Models.Users", b =>
@@ -180,19 +255,19 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8f96a1a7-f6e3-4c82-afed-60a27ede659a",
+                            Id = "71a6326b-3762-49c5-973a-645960f4c8d6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "24081552-56fa-4748-9fa1-fa7ddf29a50a",
+                            Id = "e426d605-9ae2-42e9-8609-8b89772b95c2",
                             Name = "Partner",
                             NormalizedName = "PARTNER"
                         },
                         new
                         {
-                            Id = "9e76a73a-9646-4913-9fcb-015fa8cf7d39",
+                            Id = "87b71428-7764-4769-9028-642579b6d1fe",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -304,6 +379,17 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("API.Models.MagicBag", b =>
+                {
+                    b.HasOne("API.Models.Partner", "Partner")
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+                });
+
             modelBuilder.Entity("API.Models.Partner", b =>
                 {
                     b.HasOne("API.Models.Users", "User")
@@ -311,6 +397,25 @@ namespace API.Migrations
                         .HasForeignKey("API.Models.Partner", "UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Models.ProductMagicBagItem", b =>
+                {
+                    b.HasOne("API.Models.MagicBag", "MagicBag")
+                        .WithMany("MagicBagItems")
+                        .HasForeignKey("MagicBagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Product", "Products")
+                        .WithMany("MagicBagItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MagicBag");
+
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -362,6 +467,16 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Models.MagicBag", b =>
+                {
+                    b.Navigation("MagicBagItems");
+                });
+
+            modelBuilder.Entity("API.Models.Product", b =>
+                {
+                    b.Navigation("MagicBagItems");
                 });
 
             modelBuilder.Entity("API.Models.Users", b =>

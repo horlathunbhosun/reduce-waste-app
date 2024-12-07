@@ -5,15 +5,21 @@ using System.ComponentModel.DataAnnotations;
 namespace API.Models;
 
 
-[Table("MagicBagItems")]
-public class MagicBagItem
+[Table("ProductMagicBagItems")]
+public class ProductMagicBagItem
 {
     [Key]
     public Guid Id { get; set; }
     
+    [ForeignKey("MagicBag")]
+    public Guid? MagicBagId { get; set; }
+
     public virtual MagicBag? MagicBag { get; set; }
     
-    public List<Product>? Products { get; set; }
+    [ForeignKey("Product")]
+    public Guid? ProductId { get; set; }
+    
+    public virtual Product Products { get; set; }
     
     public int Quantity { get; set; }
     

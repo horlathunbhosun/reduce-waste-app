@@ -20,7 +20,7 @@ public class TokenServiceImpl : ITokenService
     public TokenServiceImpl(IConfiguration configuration)
     {
         _configuration = configuration;
-        _symmetricSecurity = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
+        _symmetricSecurity = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]!));
     }
 
 

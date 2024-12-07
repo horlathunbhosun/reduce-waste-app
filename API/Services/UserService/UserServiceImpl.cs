@@ -173,6 +173,33 @@ public class UserServiceImpl : IUserService
          return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
      }
 
+     public async Task<GenericResponse> UpdateUser(UpdateUserRequestDto user, bool isPartner)
+     {
+       
+         try
+         {
+             return null;
+             // var userCheck = await _userRepository.UserById(user);
+             // if (userCheck == null)
+             // {
+             //     return GenericResponse.FromError(new ErrorResponse("User not found", "User not found",
+             //         StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+             // }
+
+             // var userUpdate = await _userRepository.UpdateUser(user);
+             // var success = new SuccessResponse("User Updated Successfully",
+             //     userUpdate.ToUserResponseDto(), StatusCodes.Status200OK);
+             // return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
+
+         }
+         catch (Exception e)
+         {
+             return GenericResponse.FromError(new ErrorResponse("An unexpected error occurred", e.Message,
+                 StatusCodes.Status500InternalServerError), StatusCodes.Status500InternalServerError);
+         }
+     }
+
+
      // public async Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest)
      // {
      //     var principal = _tokenService.GetPrincipalFromExpiredToken(refreshTokenRequest.Token);

@@ -21,7 +21,8 @@ public class ApplicationDbContext : IdentityDbContext<Users>
     
     public DbSet<MagicBag> MagicBags { get; set; }
     
-    public DbSet<MagicBagItem> MagicBagItems { get; set; }
+    public DbSet<ProductMagicBagItem> ProductMagicBagItems { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -35,11 +36,25 @@ public class ApplicationDbContext : IdentityDbContext<Users>
 
         modelBuilder.Entity<IdentityRole>().HasData(roles);
         
+        modelBuilder.Entity<ProductMagicBagItem>(x =>  x.HasKey(p => new {p.MagicBagId, p.ProductId}));
+
+        modelBuilder.Entity<ProductMagicBagItem>()
+            .HasOne(p => p.MagicBag)
+            .WithMany(m => m.MagicBagItems)
+            .HasForeignKey(p => p.MagicBagId);
+        
+        modelBuilder.Entity<ProductMagicBagItem>()
+            .HasOne(p => p.Products)
+            .WithMany(p => p.MagicBagItems)
+            .HasForeignKey(p => p.ProductId);
+         
+        
         modelBuilder.Entity<Users>()
             .HasOne(u => u.Partner)
             .WithOne(p => p.User)
             .HasForeignKey<Partner>(p => p.UserId);
         
+     
         
         modelBuilder.Entity<Users>()
             .Property(u => u.UserType)
@@ -53,6 +68,7 @@ public class ApplicationDbContext : IdentityDbContext<Users>
             .HasIndex(u => u.Email)
             .IsUnique();
 
+        
         
        
     }

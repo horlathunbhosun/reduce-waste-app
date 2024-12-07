@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+
 [Route("api/user")]
 [ApiController]
-public class UsersController : ControllerBase
+public class RegistrationController : ControllerBase
 {
     private readonly IUserService _userService;
     
-    public UsersController(IUserService userService)
+    public RegistrationController(IUserService userService)
     {
         _userService = userService;
     }

@@ -4,7 +4,7 @@ namespace API.Repositories;
 
 public interface IUserRepository
 {
-    Task<Users?> UserById(int id);
+    Task<Users?> UserById(string id);
 
     Task<Users?> UserByEmail(string email);
 
