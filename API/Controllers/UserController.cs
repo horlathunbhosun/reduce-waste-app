@@ -22,8 +22,6 @@ public class UserController : ControllerBase
             System.Console.WriteLine($"Claim Type: {claim.Type} - Claim Value: {claim.Value}");
         });
         return StatusCode(StatusCodes.Status200OK, currentUser.Claims.ToList());
-      //  return  StatusCode(StatusCodes.Status200OK, currentUser);
-        // var user = await _userService.UserById(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        // return StatusCode(StatusCodes.Status200OK, user);
+     
     }
 }
