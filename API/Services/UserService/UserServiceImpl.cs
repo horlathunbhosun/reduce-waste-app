@@ -11,9 +11,10 @@ using API.Repositories;
 using API.Services.Email;
 using API.Services.Token;
 using API.Services.UserService;
+using API.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Services.UserService;
 
@@ -40,7 +41,7 @@ public class UserServiceImpl : IUserService
     {
         try
         {
-            var emailCheck = await _userRepository.UserByEmail(user.Email);
+            var emailCheck = await _userRepository.FindUserByEmail(user.Email);
             if (emailCheck != null)
             {
                 return GenericResponse.FromError(new ErrorResponse("Duplicate entry", "Email exist already and in use ",
@@ -173,23 +174,34 @@ public class UserServiceImpl : IUserService
          return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
      }
 
-     public async Task<GenericResponse> UpdateUser(UpdateUserRequestDto user, bool isPartner)
+     public async Task<GenericResponse> UpdateUser(UpdateUserRequestDto user, bool isPartner, string email)
      {
        
          try
          {
-             return null;
-             // var userCheck = await _userRepository.UserById(user);
-             // if (userCheck == null)
-             // {
-             //     return GenericResponse.FromError(new ErrorResponse("User not found", "User not found",
-             //         StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
-             // }
+             var userDetails = _userRepository.FindUserByEmail(email);
+                if (userDetails == null)
+                {
+                    return GenericResponse.FromError(new ErrorResponse("User not found or logged in", "User not found or logged in",
+                        StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+                }
+                
+                userDetails.Result.Email = user.Email;
+                userDetails.Result.FullName = user.FullName;
+                userDetails.Result.PhoneNumber = user.PhoneNumber;
+                userDetails.Result.UserName = user.UserName;
 
-             // var userUpdate = await _userRepository.UpdateUser(user);
-             // var success = new SuccessResponse("User Updated Successfully",
-             //     userUpdate.ToUserResponseDto(), StatusCodes.Status200OK);
-             // return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
+                if (isPartner)
+                {
+                    userDetails.Result.Partner.BusinessNumber = user.Partner.BusinessNumber;
+                    userDetails.Result.Partner.Logo = user.Partner.Logo;
+                    userDetails.Result.Partner.Address = user.Partner.Address;
+                }
+             
+             var userUpdate = await _userRepository.UpdateUser(userDetails.Result);
+             var success = new SuccessResponse("User Updated Successfully",
+                 userUpdate.ToUserResponseDto(), StatusCodes.Status200OK);
+             return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
 
          }
          catch (Exception e)
@@ -198,6 +210,21 @@ public class UserServiceImpl : IUserService
                  StatusCodes.Status500InternalServerError), StatusCodes.Status500InternalServerError);
          }
      }
+
+     public async Task<GenericResponse> UserProfile(string email)
+     {
+         
+         var userDetails = _userRepository.FindUserByEmail(email);
+         if (userDetails == null)
+         {
+             return GenericResponse.FromError(new ErrorResponse("User not found or logged in", "User not found or logged in",
+                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+         }
+         return GenericResponse.FromSuccess(new SuccessResponse("User Details", userDetails.Result?.ToUserResponseDto(), StatusCodes.Status200OK), StatusCodes.Status200OK);
+     }
+     
+     
+
 
 
      // public async Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest)

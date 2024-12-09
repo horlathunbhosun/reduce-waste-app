@@ -15,7 +15,9 @@ public interface IUserService
 
     Task<GenericResponse> LoginUser(LoginRequestDto requestDto);
     
-    Task<GenericResponse> UpdateUser(UpdateUserRequestDto user, bool isPartner);
+    Task<GenericResponse> UpdateUser(UpdateUserRequestDto user, bool isPartner, string email);
+    
+    Task<GenericResponse> UserProfile(string email);
     
 
     //Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest);

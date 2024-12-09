@@ -27,9 +27,9 @@ public class UserRepository : IUserRepository
         return await _context.Users.FirstOrDefaultAsync(p => p.VerificationCode == verificationCode);
     }
 
-    public async Task<Users?> UserByEmail(string email)
+    public async Task<Users?> FindUserByEmail(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(e => e.Email == email);
+        return await _context.Users.Include("Partner").FirstOrDefaultAsync(e => e.Email == email);
     }
 
     public async Task<Users?> UserById(string id)

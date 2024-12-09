@@ -17,9 +17,6 @@ public class UpdateUserRequestDto
     [Phone(ErrorMessage = "Invalid Phone Number")]
     public string PhoneNumber { get; set; } = string.Empty;
     
-    [Required(ErrorMessage = "User Type is required")]
-    public required string UserType { get; set; }
-
     
     public PartnerDto? Partner { get; set; }
 }

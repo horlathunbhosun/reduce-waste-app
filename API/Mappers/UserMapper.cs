@@ -11,6 +11,7 @@ public static class UserMapper
         {
             return new UserResponseDto
             {
+                Id = userModel.Id,
                 FullName = userModel.FullName,
                 Email = userModel.Email,
                 PhoneNumber = userModel.PhoneNumber,
