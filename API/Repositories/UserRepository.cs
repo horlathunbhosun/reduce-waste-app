@@ -42,15 +42,12 @@ public class UserRepository : IUserRepository
     {
     
         Console.WriteLine($"users {user}");
-        // Check if a user with the same UserId already exists
         var existingUser = await _context.Users
             .Include(u => u.Partner)
             .FirstOrDefaultAsync(u => u.Id == user.Id);
 
         if (existingUser != null)
         {
-            // Handle the case where the user already exists
-            // For example, you can update the existing user or throw an exception
             throw new InvalidOperationException("A user with the same UserId already exists.");
         }
 
@@ -75,13 +72,6 @@ public class UserRepository : IUserRepository
 
             throw new Exception($"Something went wrong creating user: {string.Join(", ", errorMessages)}");
         }
-
-        // // Add the new user
-        // _context.Users.Add(user);
-        // await _context.SaveChangesAsync();
-        // return user;
-        
-        
         
     }
     
@@ -94,7 +84,6 @@ public class UserRepository : IUserRepository
         if (existingUser == null)
         {
             // Handle the case where the user does not exist
-            // For example, you can throw an exception
             throw new InvalidOperationException("The user does not exist.");
         }
 

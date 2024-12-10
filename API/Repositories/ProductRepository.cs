@@ -39,9 +39,18 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public Task<Product> UpdateProduct(Product product)
+    public  async Task<Product> UpdateProduct(Product product)
     {
-        throw new NotImplementedException();
+        var productExist = await  _context.Products.FindAsync(product.Id);
+        if (productExist == null)
+        {
+            throw new NotFoundException("Product does not exist");
+        }
+        
+        _context.Entry(productExist).CurrentValues.SetValues(product);
+        _context.Products.Update(productExist);
+        Console.WriteLine($"Product Updated Successfully: {product.Id}");
+        return productExist;
     }
 
     public  Task<Product> DeleteProduct(Guid id)
@@ -56,6 +65,5 @@ public class ProductRepository : IProductRepository
         _context.SaveChangesAsync();
         
         return Task.FromResult(product);
-       
     }
 }
