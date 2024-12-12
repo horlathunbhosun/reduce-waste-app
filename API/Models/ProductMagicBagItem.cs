@@ -19,7 +19,7 @@ public class ProductMagicBagItem
     [ForeignKey("Product")]
     public Guid? ProductId { get; set; }
     
-    public virtual Product Products { get; set; }
+    public virtual Product? Products { get; set; }
     
     public int Quantity { get; set; }
     

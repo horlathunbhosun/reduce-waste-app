@@ -41,14 +41,17 @@ public class UserServiceImpl : IUserService
     {
         try
         {
-            var emailCheck = await _userRepository.FindUserByEmail(user.Email);
-            if (emailCheck != null)
+            if (user.Email != null)
             {
-                return GenericResponse.FromError(new ErrorResponse("Duplicate entry", "Email exist already and in use ",
-                    StatusCodes.Status400BadRequest),StatusCodes.Status400BadRequest);
+                var emailCheck = await _userRepository.FindUserByEmail(user.Email);
+                if (emailCheck != null)
+                {
+                    return GenericResponse.FromError(new ErrorResponse("Duplicate entry", "Email exist already and in use ",
+                        StatusCodes.Status400BadRequest),StatusCodes.Status400BadRequest);
+                }
             }
-            
-            
+
+
             var userObject = await  _userRepository.CreateUser(user,password);
             Console.WriteLine($"User Created Successfully: {userObject.Id}");
             if (isPartner)
@@ -99,7 +102,7 @@ public class UserServiceImpl : IUserService
          {
              throw new NotFoundException($"Verification code {verificationCode} not valid");
          }
-         if (user.VerificationCode.Equals(verificationCode))
+         if (user.VerificationCode != null && user.VerificationCode.Equals(verificationCode))
          {
              user.VerificationCode = "";
              user.Status = Status.Activated;
@@ -139,14 +142,14 @@ public class UserServiceImpl : IUserService
 
      public async Task<GenericResponse> LoginUser(LoginRequestDto loginRequestDto)
      {
-         var userCheck = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginRequestDto.Email.ToLower());
+         var userCheck = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginRequestDto.Email!.ToLower());
          if (userCheck == null)
          {
              return GenericResponse.FromError(new ErrorResponse("Invalid Email address ", "Invalid Email Address",
                  StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
          }
 
-         var checkPassword = await _signinManager.CheckPasswordSignInAsync(userCheck, loginRequestDto.Password, false);
+         var checkPassword = await _signinManager.CheckPasswordSignInAsync(userCheck, loginRequestDto.Password!, false);
          if (!checkPassword.Succeeded)
          {
              return GenericResponse.FromError(new ErrorResponse("Invalid Email address and password ", "Invalid Email address and password",
@@ -179,26 +182,28 @@ public class UserServiceImpl : IUserService
        
          try
          {
-             var userDetails = _userRepository.FindUserByEmail(email);
+             var userDetails = await _userRepository.FindUserByEmail(email);
                 if (userDetails == null)
                 {
                     return GenericResponse.FromError(new ErrorResponse("User not found or logged in", "User not found or logged in",
                         StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
                 }
                 
-                userDetails.Result.Email = user.Email;
-                userDetails.Result.FullName = user.FullName;
-                userDetails.Result.PhoneNumber = user.PhoneNumber;
-                userDetails.Result.UserName = user.UserName;
+                userDetails.Email = user.Email;
+                userDetails.FullName = user.FullName;
+                userDetails.PhoneNumber = user.PhoneNumber;
+                userDetails.UserName = user.UserName;
 
                 if (isPartner)
                 {
-                    userDetails.Result.Partner.BusinessNumber = user.Partner.BusinessNumber;
-                    userDetails.Result.Partner.Logo = user.Partner.Logo;
-                    userDetails.Result.Partner.Address = user.Partner.Address;
+                    
+                        userDetails.Partner!.BusinessNumber = user.Partner!.BusinessNumber;
+                        userDetails.Partner.Logo = user.Partner.Logo;
+                        userDetails.Partner.Address = user.Partner.Address;
+                    
                 }
              
-             var userUpdate = await _userRepository.UpdateUser(userDetails.Result);
+             var userUpdate = await _userRepository.UpdateUser(userDetails);
              var success = new SuccessResponse("User Updated Successfully",
                  userUpdate.ToUserResponseDto(), StatusCodes.Status200OK);
              return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
@@ -214,13 +219,13 @@ public class UserServiceImpl : IUserService
      public async Task<GenericResponse> UserProfile(string email)
      {
          
-         var userDetails = _userRepository.FindUserByEmail(email);
+         var userDetails = await _userRepository.FindUserByEmail(email);
          if (userDetails == null)
          {
              return GenericResponse.FromError(new ErrorResponse("User not found or logged in", "User not found or logged in",
                  StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
          }
-         return GenericResponse.FromSuccess(new SuccessResponse("User Details", userDetails.Result?.ToUserResponseDto(), StatusCodes.Status200OK), StatusCodes.Status200OK);
+         return GenericResponse.FromSuccess(new SuccessResponse("User Details", userDetails.ToUserResponseDto(), StatusCodes.Status200OK), StatusCodes.Status200OK);
      }
      
      

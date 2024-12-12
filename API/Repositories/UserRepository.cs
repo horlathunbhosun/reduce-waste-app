@@ -53,9 +53,10 @@ public class UserRepository : IUserRepository
 
         var userCreation = await _userManager.CreateAsync(user, password);
         
+        
         if (userCreation.Succeeded)
         {
-            var roleCreation = await _userManager.AddToRoleAsync(user, user.UserType.ToString());
+            var roleCreation = await _userManager.AddToRoleAsync(user, user.UserType!.ToString());
 
             if (roleCreation.Succeeded)
             {

@@ -51,6 +51,11 @@ public class UserController : ControllerBase
     {
         var currentUser = HttpContext.User;
         var email = HttpContext.User.Claims.FirstOrDefault(c => c.Type == Constants.EmailClamValue.Value)?.Value;
+        if (email == null)
+        {
+            return string.Empty;
+        }
+
         return email;
     }
     

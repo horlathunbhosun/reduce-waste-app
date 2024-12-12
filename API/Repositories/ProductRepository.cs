@@ -56,7 +56,7 @@ public class ProductRepository : IProductRepository
     public  Task<Product> DeleteProduct(Guid id)
     {
         var product =  _context.Products.Find(id);
-        if (product != null)
+        if (product == null)
         {
             throw new NotFoundException("Product not found");
         }

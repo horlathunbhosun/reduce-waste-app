@@ -28,11 +28,13 @@ public class TokenServiceImpl : ITokenService
     {
         // var userRoles =  _userManager.GetRolesAsync(user);
   
+        
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
-            new Claim("userRole", user.UserType)
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName ?? string.Empty),
+            new Claim("userRole", user.UserType ?? string.Empty),
+            new Claim(ClaimTypes.Role, user.UserType ?? string.Empty),
         };
         
 
@@ -79,7 +81,7 @@ public class TokenServiceImpl : ITokenService
             ValidateAudience = false,
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]!)),
             ValidateLifetime = false 
         };
 

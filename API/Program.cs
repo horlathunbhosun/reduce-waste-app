@@ -4,6 +4,7 @@ using API.Models;
 using API.Repositories;
 using API.Services.UserService;
 using API.Services.Email;
+using API.Services.Product;
 using API.Services.Token;
 using API.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -96,7 +97,15 @@ builder.Services.AddAuthentication(options =>
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
              GenericResponse response = GenericResponse.FromError(new ErrorResponse("Unauthorized", "Unauthorized", StatusCodes.Status401Unauthorized), StatusCodes.Status401Unauthorized);          
              return context.Response.WriteAsJsonAsync(response);
-        }
+        },  
+        OnForbidden = context =>
+        {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        context.Response.ContentType = "application/json";
+        GenericResponse response = GenericResponse.FromError(new ErrorResponse("Forbidden", "You do not have permission to access this resource", StatusCodes.Status403Forbidden), StatusCodes.Status403Forbidden);
+        return context.Response.WriteAsJsonAsync(response);
+    }
+        
     };
 });
 
@@ -104,6 +113,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
 builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductServiceImpl>();
+
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailServiceImpl>();
@@ -124,7 +137,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

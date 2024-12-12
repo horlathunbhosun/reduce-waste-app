@@ -5,13 +5,13 @@ using API.Repositories;
 
 namespace API.Services.Product;
 
-public class ProductService : IProductService
+public class ProductServiceImpl : IProductService
 {
 
     private readonly IProductRepository _productRepository;
     
     
-    public ProductService(IProductRepository productRepository)
+    public ProductServiceImpl(IProductRepository productRepository)
     {
         _productRepository = productRepository;
     }

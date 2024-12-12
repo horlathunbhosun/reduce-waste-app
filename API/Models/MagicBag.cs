@@ -16,7 +16,7 @@ public class MagicBag
     [ForeignKey("Partner")]
     public  int PartnerId { get; set; }
     
-    public virtual Partner Partner { get; set; }
+    public virtual Partner? Partner { get; set; }
     
     public  List<ProductMagicBagItem>? MagicBagItems { get; set; }
     
