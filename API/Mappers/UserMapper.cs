@@ -22,6 +22,9 @@ public static class UserMapper
                 UpdatedAt = userModel.UpdatedAt
             };
         }
+        
+        
+        
 
 
         public static Users ToUserRequestDto(this UserRequestDto userRequest)
