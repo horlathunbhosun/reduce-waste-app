@@ -27,8 +27,6 @@ public class TokenServiceImpl : ITokenService
     public JwtToken CreateToken(Users user)
     {
         // var userRoles =  _userManager.GetRolesAsync(user);
-  
-        
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
