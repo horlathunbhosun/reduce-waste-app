@@ -127,7 +127,7 @@ public class UserServiceImpl : IUserService
          catch (NotFoundException e)
          {
              return GenericResponse.FromError(new ErrorResponse("Verification code is invalid", e.Message,
-                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+                 StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
          }
          catch (Exception e)
          {

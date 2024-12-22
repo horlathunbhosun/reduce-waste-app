@@ -38,6 +38,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'core',
+        loadChildren: () =>
+          import('./pages/core/core.routes').then(
+            (m) => m.CoreRoutes
+          ),
+      },
+      {
         path: 'extra',
         loadChildren: () =>
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),

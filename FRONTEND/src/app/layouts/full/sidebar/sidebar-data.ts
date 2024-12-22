@@ -11,7 +11,15 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
   },
   {
-    navCap: 'Ui Components',
+    navCap: 'Ui ',
+  },
+
+
+  {
+    displayName: 'Products',
+    iconName: 'brand-producthunt',
+    bgcolor: 'accent',
+    route: '/core/product',
   },
   {
     displayName: 'Badge',
