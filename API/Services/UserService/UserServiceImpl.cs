@@ -122,7 +122,6 @@ public class UserServiceImpl : IUserService
              var success = new SuccessResponse("User Verified Successfully",
                  user.ToUserResponseDto(), StatusCodes.Status200OK);
              return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
-
          }
          catch (NotFoundException e)
          {
