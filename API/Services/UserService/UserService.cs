@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Services.UserService;
 
-public class UserServiceImpl : IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IPartnerRepository _partnerRepository;
@@ -27,7 +27,7 @@ public class UserServiceImpl : IUserService
     private readonly SignInManager<Users> _signinManager;
     private readonly ITokenService _tokenService;
 
-    public UserServiceImpl(IUserRepository userRepository, IPartnerRepository partnerRepository, IEmailService emailService, UserManager<Users> userManager, SignInManager<Users> signinManager,ITokenService tokenService)
+    public UserService(IUserRepository userRepository, IPartnerRepository partnerRepository, IEmailService emailService, UserManager<Users> userManager, SignInManager<Users> signinManager,ITokenService tokenService)
     {
         _userRepository = userRepository;
         _partnerRepository = partnerRepository;

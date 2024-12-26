@@ -8,11 +8,11 @@ namespace API.Services.Email;
 
 
 
-public class EmailServiceImpl : IEmailService
+public class EmailService : IEmailService
 {
     private readonly EmailSettings _emailSettings;
 
-    public EmailServiceImpl(IOptions<EmailSettings> emailSettings)
+    public EmailService(IOptions<EmailSettings> emailSettings)
     {
         _emailSettings = emailSettings.Value;
     }

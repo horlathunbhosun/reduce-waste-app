@@ -10,14 +10,14 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace API.Services.Token;
 
-public class TokenServiceImpl : ITokenService
+public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
     private readonly SymmetricSecurityKey _symmetricSecurity; 
     // private readonly UserManager<IdentityUser> _userManager;
     // private readonly RoleManager<IdentityRole> _roleManager;
 
-    public TokenServiceImpl(IConfiguration configuration)
+    public TokenService(IConfiguration configuration)
     {
         _configuration = configuration;
         _symmetricSecurity = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]!));

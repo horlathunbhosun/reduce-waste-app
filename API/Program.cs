@@ -2,8 +2,10 @@ using API.Data;
 using API.Dtos.Response;
 using API.Models;
 using API.Repositories;
+using API.Repositories.Interface;
 using API.Services.UserService;
 using API.Services.Email;
+using API.Services.MagicBag;
 using API.Services.Product;
 using API.Services.Token;
 using API.Utilities;
@@ -110,16 +112,20 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserServiceImpl>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
-builder.Services.AddScoped<ITokenService, TokenServiceImpl>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddScoped<IMagicBagRepository, MagicBagRepository>();
+builder.Services.AddScoped<IMagicBagService, MagicBagService>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductServiceImpl>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddScoped<IEmailService, EmailServiceImpl>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAuthorization(options =>
 {
