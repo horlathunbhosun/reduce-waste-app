@@ -41,7 +41,7 @@ public class UserRepository : IUserRepository
     public async Task<Users> CreateUser(Users user, string password)
     {
     
-        Console.WriteLine($"users {user}");
+       
         var existingUser = await _context.Users
             .Include(u => u.Partner)
             .FirstOrDefaultAsync(u => u.Id == user.Id);
