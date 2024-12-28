@@ -1,7 +1,7 @@
 using API.Dtos.User;
 using API.Models;
 
-namespace API.Repositories;
+namespace API.Repositories.Interface;
 
 public interface IUserRepository
 {

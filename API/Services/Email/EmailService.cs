@@ -28,27 +28,6 @@ public class EmailService : IEmailService
         return template;
     }
 
-    public async Task SendEmailAsync(string toEmail, string subject,  string body)
-    {
-        var email = new MimeMessage();
-        email.From.Add(new MailboxAddress(_emailSettings.Name, _emailSettings.EmailId));
-        email.To.Add(new MailboxAddress(toEmail, toEmail));
-        email.Subject = subject;
-
-        email.Body = new TextPart("html") { Text = body };
-        
-        using var smtp = new SmtpClient();
-        try
-        {
-            await smtp.ConnectAsync(_emailSettings.SMTPServer, _emailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_emailSettings.UserName, _emailSettings.Password);
-            await smtp.SendAsync(email);
-        }
-        finally
-        {
-            await smtp.DisconnectAsync(true);
-        }
-    }
     
     public async Task SendEmailWithTemplateAsync(string toEmail, string subject,  string templatePath, Dictionary<string, string> replacements)
     {
