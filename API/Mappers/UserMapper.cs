@@ -58,7 +58,7 @@ public static class UserMapper
         }
         
         
-        public static PartnerResponseDto ToPartnerResponseDto(this Partner partner)
+        public static PartnerResponseDto ToPartnerResponseDto(this Partner? partner)
         {
             return new PartnerResponseDto
             {

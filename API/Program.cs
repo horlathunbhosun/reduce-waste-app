@@ -120,6 +120,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMagicBagRepository, MagicBagRepository>();
 builder.Services.AddScoped<IMagicBagService, MagicBagService>();
 
+builder.Services.AddScoped<IProductMagicBagItemRepository, ProductMagicBagItemRepository>();
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 

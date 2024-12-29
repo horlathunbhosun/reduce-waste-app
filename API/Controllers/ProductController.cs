@@ -49,7 +49,7 @@ public class ProductController : ControllerBase
     }
     
     
-    [HttpPatch("{id}")]
+    [HttpPatch("{id}/update")]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] ProductRequestDto productRequestDto)
     {
         if (!ModelState.IsValid)
@@ -63,7 +63,7 @@ public class ProductController : ControllerBase
     }
     
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}/delete")]
     public  IActionResult DeleteProduct([FromRoute] Guid id)
     {
         var response = _productService.DeleteProduct(id);

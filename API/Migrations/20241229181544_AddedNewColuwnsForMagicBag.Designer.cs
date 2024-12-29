@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241229181544_AddedNewColuwnsForMagicBag")]
+    partial class AddedNewColuwnsForMagicBag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,9 +45,6 @@ namespace API.Migrations
 
                     b.Property<int>("PartnerId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -264,20 +264,20 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8f476a4a-5bd3-4c61-a9ff-8b53f6ebbe02",
+                            Id = "ac11b9c7-4377-4c4a-8f30-a895232130cf",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3af03efa-b090-40aa-8c8d-c70d2307d76e",
+                            Id = "8aee39d8-0e8a-4b66-8911-728f507cd20b",
                             Name = "Partner",
                             NormalizedName = "PARTNER"
                         },
                         new
                         {
-                            Id = "88997028-7f1f-4d6b-8ca0-b2550866ead8",
-                            Name = "User",
+                            Id = "be6acdbb-f1fc-401f-ba23-b55763e6667f",
+                            Name = " ",
                             NormalizedName = "USER"
                         });
                 });

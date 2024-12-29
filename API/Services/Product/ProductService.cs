@@ -66,7 +66,11 @@ public class ProductService : IProductService
             {
                 return GenericResponse.FromError(new ErrorResponse("An Error occured product not found", "Product not found",StatusCodes.Status404NotFound ), StatusCodes.Status404NotFound);
             } 
-            var updatedProduct = await _productRepository.UpdateProduct(productRequestDto.ToProductRequestDto());
+           
+            product.Name = productRequestDto.Name;
+            product.Description = productRequestDto.Description;
+            product.UpdatedAt = DateTime.Now;
+            var updatedProduct = await _productRepository.UpdateProduct(product, id);
             if (updatedProduct == null)
             {
                 return GenericResponse.FromError(new ErrorResponse("An Error occured product not updated", "Product not updated",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
@@ -88,6 +92,6 @@ public class ProductService : IProductService
          {
               return GenericResponse.FromError(new ErrorResponse("An Error occured product not found", "Product not found",StatusCodes.Status404NotFound ), StatusCodes.Status404NotFound);
          }
-         return GenericResponse.FromSuccess(new SuccessResponse("Product found successfully", "", StatusCodes.Status204NoContent), StatusCodes.Status204NoContent);
+         return GenericResponse.FromSuccess(new SuccessResponse("Product found successfully", "", StatusCodes.Status200OK), StatusCodes.Status200OK);
     }
 }

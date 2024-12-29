@@ -39,17 +39,20 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public  async Task<Product> UpdateProduct(Product product)
+    public  async Task<Product> UpdateProduct(Product product, Guid id)
     {
-        var productExist = await  _context.Products.FindAsync(product.Id);
+        var productExist = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         if (productExist == null)
         {
             throw new NotFoundException("Product does not exist");
         }
+
         
         _context.Entry(productExist).CurrentValues.SetValues(product);
-        _context.Products.Update(productExist);
+        var data =   _context.Products.Update(productExist);
         Console.WriteLine($"Product Updated Successfully: {product.Id}");
+        Console.WriteLine($"Product Updated ENtity Successfully: {data.Entity.Name}" );
+        await _context.SaveChangesAsync();
         return productExist;
     }
 

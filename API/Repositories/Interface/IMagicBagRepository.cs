@@ -6,6 +6,8 @@ public interface IMagicBagRepository
 {
     Task<MagicBag?> GetMagicBagById(Guid id);
     
+    Task<MagicBag?> GetMagicBagByName(string? name);
+    
     Task<List<MagicBag>> GetAllMagicBags();
     
     Task<List<MagicBag>> GetAllMagicBagsByPartnerId(int partnerId);

@@ -8,6 +8,12 @@ public class ProductMagicBagItemRepository : IProductMagicBagItemRepository
 {
     private readonly ApplicationDbContext _context;
     
+    
+    public ProductMagicBagItemRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+    
     public async Task<ProductMagicBagItem?> GetProductMagicBagItemById(Guid id)
     {
         return await _context.ProductMagicBagItems.FindAsync(id);   

@@ -19,6 +19,11 @@ public class MagicBagRepository : IMagicBagRepository
         return await _context.MagicBags.Include("MagicBagItems").FirstOrDefaultAsync(m => m.Id == id);
     }
 
+    public async Task<MagicBag?> GetMagicBagByName(string? name)
+    {
+        return await _context.MagicBags.Include("MagicBagItems").FirstOrDefaultAsync(m => m.Name == name);
+    }
+
     public async Task<List<MagicBag>> GetAllMagicBags()
     {
         return await _context.MagicBags.Include("MagicBagItems").ToListAsync();
