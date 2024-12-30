@@ -16,22 +16,25 @@ public class MagicBagRepository : IMagicBagRepository
     
     public async Task<MagicBag?> GetMagicBagById(Guid id)
     {
-        return await _context.MagicBags.Include("MagicBagItems").FirstOrDefaultAsync(m => m.Id == id);
+        return await _context.MagicBags.Include("MagicBagItems").Include("Partners").FirstOrDefaultAsync(m => m.Id == id);
     }
 
     public async Task<MagicBag?> GetMagicBagByName(string? name)
     {
-        return await _context.MagicBags.Include("MagicBagItems").FirstOrDefaultAsync(m => m.Name == name);
+        return await _context.MagicBags.Include("MagicBagItems").Include("Partner").FirstOrDefaultAsync(m => m.Name == name);
     }
 
     public async Task<List<MagicBag>> GetAllMagicBags()
     {
-        return await _context.MagicBags.Include("MagicBagItems").ToListAsync();
+        return await _context.MagicBags
+                .Include(m => m.MagicBagItems)
+                 .Include(m => m.Partner)
+                    .ThenInclude(p => p.User).ToListAsync();
     }
 
     public async Task<List<MagicBag>> GetAllMagicBagsByPartnerId(int partnerId)
     {
-        return await _context.MagicBags.Include("MagicBagItems").Where(m => m.PartnerId == partnerId).ToListAsync();
+        return await _context.MagicBags.Include("MagicBagItems").Include("Partner").Where(m => m.PartnerId == partnerId).ToListAsync();
     }
 
     public async Task<MagicBag> CreateMagicBag(MagicBag magicBag)

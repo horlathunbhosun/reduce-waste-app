@@ -33,5 +33,12 @@ public class MagicBagController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
     
+    [HttpGet("get-all")]
+    public async Task<IActionResult> GetAllMagicBags()
+    {
+        var response = await _magicBagService.GetAllMagicBags();
+        return StatusCode(response.StatusCode, response);
+    }
+    
 }
 

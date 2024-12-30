@@ -18,7 +18,7 @@ public class MagicBagService : IMagicBagService
         _productMagicBagItemRepository = productMagicBagItemRepository;
     }
     
-        public async Task<GenericResponse> CreateMagicBag(MagicBagRequestDto magicBagRequestDto)
+    public async Task<GenericResponse> CreateMagicBag(MagicBagRequestDto magicBagRequestDto)
         {
             try {
                 var magicBagExist = await _magicBagRepository.GetMagicBagByName(magicBagRequestDto.Name);
@@ -47,11 +47,21 @@ public class MagicBagService : IMagicBagService
     public Task<GenericResponse> GetMagicBag(Guid id)
     {
         throw new NotImplementedException();
+ 
     }
 
-    public Task<GenericResponse> GetAllMagicBags()
+    public async Task<GenericResponse> GetAllMagicBags()
     {
-        throw new NotImplementedException();
+        var magicBags = await _magicBagRepository.GetAllMagicBags();
+        
+        if (magicBags == null)
+        {
+            return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag not created",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
+        }
+        
+        return GenericResponse.FromSuccess(
+            new SuccessResponse("Magic Bag fetched successfully", magicBags.Select(magicBag => magicBag.ToMagicBagResponseDto()).ToList(),
+                StatusCodes.Status200OK), StatusCodes.Status200OK);   
     }
 
     public Task<GenericResponse> UpdateMagicBag(MagicBagRequestDto magicBagRequestDto)
