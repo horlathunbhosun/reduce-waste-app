@@ -34,7 +34,11 @@ public class MagicBagRepository : IMagicBagRepository
 
     public async Task<List<MagicBag>> GetAllMagicBagsByPartnerId(int partnerId)
     {
-        return await _context.MagicBags.Include("MagicBagItems").Include("Partner").Where(m => m.PartnerId == partnerId).ToListAsync();
+        return await _context.MagicBags
+            .Include(m => m.MagicBagItems)
+              .Include(m => m.Partner)
+                .ThenInclude(p => p.User)
+                    .Where(m => m.PartnerId == partnerId).ToListAsync();
     }
 
     public async Task<MagicBag> CreateMagicBag(MagicBag magicBag)

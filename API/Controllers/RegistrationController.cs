@@ -10,14 +10,9 @@ namespace API.Controllers;
 
 [Route("api/user")]
 [ApiController]
-public class RegistrationController : ControllerBase
+public class RegistrationController(IUserService userService) : ControllerBase
 {
-    private readonly IUserService _userService;
-    
-    public RegistrationController(IUserService userService)
-    {
-        _userService = userService;
-    }
+   
     
     
     [HttpPost("create")]
@@ -30,7 +25,7 @@ public class RegistrationController : ControllerBase
             return StatusCode(responseEr.StatusCode, responseEr);
         }
         bool isPartner = userRequest.Partner != null;
-        var response =  await _userService.CreateUser(userRequest.ToUserRequestDto(), isPartner, userRequest.Password);
+        var response =  await userService.CreateUser(userRequest.ToUserRequestDto(), isPartner, userRequest.Password);
         return StatusCode(response.StatusCode, response);
     }
     
@@ -43,7 +38,7 @@ public class RegistrationController : ControllerBase
             var responseEr = HanldeError("Validation failed", "Verification code is required", StatusCodes.Status400BadRequest);
             return StatusCode(responseEr.StatusCode, responseEr);
         }
-        var response = await _userService.VerifyUserAsync(verificationCode);
+        var response = await userService.VerifyUserAsync(verificationCode);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -58,7 +53,7 @@ public class RegistrationController : ControllerBase
             return StatusCode(responseEr.StatusCode, responseEr);
         }
 
-        var response = await _userService.LoginUser(loginRequestDto);
+        var response = await userService.LoginUser(loginRequestDto);
         return StatusCode(response.StatusCode, response);
     }
 

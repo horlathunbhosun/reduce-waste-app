@@ -4,38 +4,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories;
 
-public class PartnerRepository : IPartnerRepository
+public class PartnerRepository(ApplicationDbContext context) : IPartnerRepository
 {
-    private readonly ApplicationDbContext _context;
-    
-    public PartnerRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
 
     public async Task<Partner?> FindPartnerById(int id)
     {
-        return await _context.Partners.FindAsync(id);
+        return await context.Partners.FindAsync(id);
     }
-    
+
+    public  Partner? FindPartnerByUserId(string id)
+    {
+       return context.Partners.FirstOrDefault(p => p.UserId == id);
+    }
+
     public async Task<Partner> CreatePartner(Partner partner)
     {
-        await _context.Partners.AddAsync(partner);
-        await _context.SaveChangesAsync();
+
+        var existingPartner = await context.Partners
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Uuid == partner.Uuid);
+
+        if (existingPartner != null)
+        {
+            throw new InvalidOperationException("Partner already exists.");
+        }
+        context.Partners.Add(partner);
+        await context.SaveChangesAsync();
         Console.WriteLine($"Partner Created Successfully: {partner.Id}");
         return partner;
     }
     
     public  async Task<Partner> UpdatePartner(Partner partner, string userId)
     {
-        var partnerExist = await _context.Partners.FirstOrDefaultAsync(p => p.UserId == userId);
+        var partnerExist = await context.Partners.FirstOrDefaultAsync(p => p.UserId == userId);
         if (partnerExist == null)
         {
             throw new InvalidOperationException("Partner does not exist");
         }
-        
-        _context.Entry(partnerExist).CurrentValues.SetValues(partner);
-        _context.Partners.Update(partnerExist);
+
+        context.Entry(partnerExist).CurrentValues.SetValues(partner);
+        context.Partners.Update(partnerExist);
         Console.WriteLine($"Partner Updated Successfully: {partner.Id}");
         return partner;
     }

@@ -33,6 +33,7 @@ public class TokenService : ITokenService
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName ?? string.Empty),
             new Claim("userRole", user.UserType ?? string.Empty),
             new Claim(ClaimTypes.Role, user.UserType ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.Jti, user.Id)
         };
         
 

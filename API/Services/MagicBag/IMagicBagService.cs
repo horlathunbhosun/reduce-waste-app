@@ -11,7 +11,9 @@ public interface IMagicBagService
     
     Task<GenericResponse> GetAllMagicBags();
     
-    Task<GenericResponse> UpdateMagicBag(MagicBagRequestDto magicBagRequestDto);
+    Task<GenericResponse> GetAllMagicBagsByPartnerId(int partnerId);
+
+    Task<GenericResponse> UpdateMagicBag(Guid id,MagicBagRequestDto magicBagRequestDto);
     
     Task<GenericResponse> DeleteMagicBag(Guid id);
     

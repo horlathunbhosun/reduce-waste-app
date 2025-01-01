@@ -5,36 +5,25 @@ using API.Repositories.Interface;
 
 namespace API.Services.MagicBag;
 
-public class MagicBagService : IMagicBagService
+public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMagicBagItemRepository productMagicBagItemRepository) : IMagicBagService
 {
-    
-    private readonly IMagicBagRepository _magicBagRepository;
-    
-    private readonly IProductMagicBagItemRepository _productMagicBagItemRepository;
-    
-    public MagicBagService(IMagicBagRepository magicBagRepository, IProductMagicBagItemRepository productMagicBagItemRepository)
-    {
-        _magicBagRepository = magicBagRepository;
-        _productMagicBagItemRepository = productMagicBagItemRepository;
-    }
-    
     public async Task<GenericResponse> CreateMagicBag(MagicBagRequestDto magicBagRequestDto)
         {
             try {
-                var magicBagExist = await _magicBagRepository.GetMagicBagByName(magicBagRequestDto.Name);
+                var magicBagExist = await magicBagRepository.GetMagicBagByName(magicBagRequestDto.Name);
                 if (magicBagExist != null)
                 {
                   return  GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag already exist",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
                 }
                 
-                var createMagicBag = await _magicBagRepository.CreateMagicBag(magicBagRequestDto.ToMagicBagRequestDto());
+                var createMagicBag = await magicBagRepository.CreateMagicBag(magicBagRequestDto.ToMagicBagRequestDto());
                 if (createMagicBag == null)
                 {
                  return  GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag not created",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
                 }
                 Console.WriteLine($"MagicBag Created Successfully: {createMagicBag}");
                 return GenericResponse.FromSuccess(
-                    new SuccessResponse("Magic Bag created successfully", createMagicBag?.ToMagicBagResponseDto(),
+                    new SuccessResponse("Magic Bag created successfully", createMagicBag.ToMagicBagResponseDto(),
                         StatusCodes.Status201Created), StatusCodes.Status201Created);
             }
             catch (Exception e)
@@ -52,11 +41,11 @@ public class MagicBagService : IMagicBagService
 
     public async Task<GenericResponse> GetAllMagicBags()
     {
-        var magicBags = await _magicBagRepository.GetAllMagicBags();
+        var magicBags = await magicBagRepository.GetAllMagicBags();
         
         if (magicBags == null)
         {
-            return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag not created",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
+            return GenericResponse.FromError(new ErrorResponse("An Error occured", "No Magic Bags",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
         }
         
         return GenericResponse.FromSuccess(
@@ -64,7 +53,21 @@ public class MagicBagService : IMagicBagService
                 StatusCodes.Status200OK), StatusCodes.Status200OK);   
     }
 
-    public Task<GenericResponse> UpdateMagicBag(MagicBagRequestDto magicBagRequestDto)
+    public async Task<GenericResponse> GetAllMagicBagsByPartnerId(int partnerId)
+    {
+        var magicBags = await magicBagRepository.GetAllMagicBagsByPartnerId(partnerId);
+
+        if (magicBags == null)
+        {
+            return GenericResponse.FromError(new ErrorResponse("An Error occured", "No Magic Bags", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+        }
+
+        return GenericResponse.FromSuccess(
+            new SuccessResponse("Magic Bag fetched successfully", magicBags.Select(magicBag => magicBag.ToMagicBagResponseDto()).ToList(),
+                StatusCodes.Status200OK), StatusCodes.Status200OK);
+    }
+
+    public Task<GenericResponse> UpdateMagicBag(Guid id, MagicBagRequestDto magicBagRequestDto)
     {
         throw new NotImplementedException();
     }

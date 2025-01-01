@@ -55,17 +55,10 @@ public class UserService : IUserService
 
             var userObject = await  _userRepository.CreateUser(user,password);
             Console.WriteLine($"User Created Successfully: {userObject.Id}");
-            if (isPartner)
-            {
-                Partner partner = new Partner
-                {
-                    UserId = userObject.Id,
-                    BusinessNumber = user.Partner!.BusinessNumber,
-                    Logo = user.Partner!.Logo,
-                    Address = user.Partner!.Address,
-                };
-                await  _partnerRepository.CreatePartner(partner);
-            }
+
+            await Task.Delay(2000);
+
+           
             // Prepare replacements for the template
             if (userObject.VerificationCode != null)
             {
@@ -82,7 +75,20 @@ public class UserService : IUserService
             var roles = await _userManager.GetRolesAsync(userObject);
             var userResponseDto = userObject.ToUserResponseDto();
             userResponseDto.Roles = roles.ToList();
-            
+
+
+            if (isPartner)
+            {
+
+                var partner = new Partner
+                {
+                    UserId = userObject.Id,
+                    BusinessNumber = user.Partner!.BusinessNumber,
+                    Logo = user.Partner!.Logo,
+                    Address = user.Partner!.Address,
+                };
+                await _partnerRepository.CreatePartner(partner);
+            }
             var success = new SuccessResponse("User Created Successfully",
                 userObject.ToUserResponseDto(), StatusCodes.Status200OK);
             return GenericResponse.FromSuccess(success, StatusCodes.Status200OK);
@@ -142,7 +148,7 @@ public class UserService : IUserService
 
      public async Task<GenericResponse> LoginUser(LoginRequestDto loginRequestDto)
      {
-         var userCheck = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginRequestDto.Email!.ToLower());
+         var userCheck = await _userManager.Users.Include(u => u.Partner).FirstOrDefaultAsync(x => x.Email == loginRequestDto.Email!.ToLower());
          if (userCheck == null)
          {
              return GenericResponse.FromError(new ErrorResponse("Invalid Email address ", "Invalid Email Address",
@@ -227,9 +233,15 @@ public class UserService : IUserService
          }
          return GenericResponse.FromSuccess(new SuccessResponse("User Details", userDetails.ToUserResponseDto(), StatusCodes.Status200OK), StatusCodes.Status200OK);
      }
-     
-     
 
+     public Partner? GetPartnerByUserId(string userId)
+     {
+         var partnersDetail =  _partnerRepository.FindPartnerByUserId(userId);
+
+
+         return partnersDetail;
+
+     }
 
 
      // public async Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest)

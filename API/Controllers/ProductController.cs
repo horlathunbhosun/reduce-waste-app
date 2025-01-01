@@ -9,17 +9,10 @@ namespace API.Controllers;
 [Authorize(Roles = "Partner,Admin")]
 [Route("api/product")]
 [ApiController]
-public class ProductController : ControllerBase
+public class ProductController(IProductService productService) : ControllerBase
 {
     
-    private readonly IProductService _productService;
-    
-    
-    public ProductController(IProductService productService)
-    {
-        _productService = productService;
-    }
-    
+
     [HttpPost("create")]
     public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto productRequestDto)
     {
@@ -29,14 +22,14 @@ public class ProductController : ControllerBase
             var responseEr = Constants.ErrorValidation.HanldeError("Validation failed", string.Join("; ", errors), StatusCodes.Status400BadRequest );
             return StatusCode(responseEr.StatusCode, responseEr);
         }
-        var response = await _productService.CreateProduct(productRequestDto);
+        var response = await productService.CreateProduct(productRequestDto);
         return StatusCode(response.StatusCode, response);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById([FromRoute] Guid id)
     {
-        var response = await _productService.GetProductById(id);
+        var response = await productService.GetProductById(id);
         return StatusCode(response.StatusCode, response);
     }
     
@@ -44,7 +37,7 @@ public class ProductController : ControllerBase
     [HttpGet("all")]
     public async Task<IActionResult> GetAllProducts()
     {
-        var response = await _productService.GetAllProducts();
+        var response = await productService.GetAllProducts();
         return StatusCode(response.StatusCode, response);
     }
     
@@ -58,7 +51,7 @@ public class ProductController : ControllerBase
             var responseEr = Constants.ErrorValidation.HanldeError("Validation failed", string.Join("; ", errors), StatusCodes.Status400BadRequest );
             return StatusCode(responseEr.StatusCode, responseEr);
         }
-        var response = await _productService.UpdateProduct(id, productRequestDto);
+        var response = await productService.UpdateProduct(id, productRequestDto);
         return StatusCode(response.StatusCode, response);
     }
     
@@ -66,7 +59,7 @@ public class ProductController : ControllerBase
     [HttpDelete("{id}/delete")]
     public  IActionResult DeleteProduct([FromRoute] Guid id)
     {
-        var response = _productService.DeleteProduct(id);
+        var response = productService.DeleteProduct(id);
         return StatusCode(response.StatusCode, response);
     }
     

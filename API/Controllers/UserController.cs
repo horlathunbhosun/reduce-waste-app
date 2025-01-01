@@ -12,20 +12,14 @@ namespace API.Controllers;
 [Authorize]
 [Route("api/user")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
     
-    private readonly IUserService _userService;
-    public UserController(IUserService userService)
-    {
-        _userService = userService;
-    }
- 
     
     [HttpGet("profile")]
     public async Task<IActionResult> Profile()
     {
-        var userDetail = await _userService.UserProfile(GetEmail());        
+        var userDetail = await userService.UserProfile(GetEmail());        
         return StatusCode(StatusCodes.Status200OK, userDetail);
      
     }
@@ -42,7 +36,7 @@ public class UserController : ControllerBase
         }
         var isPartner = CheckRole();
         var email = GetEmail();
-        var response = await _userService.UpdateUser(user,isPartner,email);
+        var response = await userService.UpdateUser(user,isPartner,email);
         return StatusCode(response.StatusCode, response);
     }
     

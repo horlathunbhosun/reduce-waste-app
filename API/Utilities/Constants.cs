@@ -19,4 +19,38 @@ public static class Constants
         }
         
     }
+    
+    
+
+
+    public static string GetEmail(HttpContext httpContext)
+    {
+        var email = httpContext.User.Claims.FirstOrDefault(c => c.Type == Constants.EmailClamValue.Value)?.Value;
+        if (email == null)
+        {
+            return string.Empty;
+        }
+
+        return email;
+    }
+
+
+    public static bool CheckRole(HttpContext httpContext)
+    {
+        var role = httpContext.User.Claims.FirstOrDefault(c => c.Type == "userRole")?.Value;
+        return role == "Partner";
+    }
+
+
+    public static string GetUserId(HttpContext httpContext)
+    {
+        var currentUser = httpContext.User;
+        var userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == "jti")?.Value;
+        if (userId == null)
+        {
+            return string.Empty;
+        }
+
+        return userId;
+    }
 }
