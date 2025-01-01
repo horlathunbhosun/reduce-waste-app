@@ -6,6 +6,8 @@ namespace API.Services.MagicBag;
 public interface IMagicBagService 
 {
     Task<GenericResponse> CreateMagicBag(MagicBagRequestDto magicBagRequestDto);
+    
+    Task<GenericResponse> CreateProductMagicBagItem(ProductMagicBagItemRequest productMagicBagItemRequest);
 
     Task<GenericResponse> GetMagicBag(Guid id);
     

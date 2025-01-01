@@ -20,8 +20,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()  
     .AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-    options.JsonSerializerOptions.WriteIndented = true; // Optional for pretty formatting
+   // options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+   // options.JsonSerializerOptions.WriteIndented = true; // Optional for pretty formatting
+
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = false;
 });
 
 

@@ -14,6 +14,10 @@ public interface IMagicBagRepository
     
     Task<MagicBag> CreateMagicBag(MagicBag magicBag);
     
+    Task<ProductMagicBagItem> CreateProductMagicBagItem(ProductMagicBagItem productMagicBagItem);
+
+    Task<ProductMagicBagItem?> FindProductMagicItemByProductIdAndMagicBagItem(Guid productId, Guid magicBagId);
+
     Task<MagicBag> UpdateMagicBag(MagicBag magicBag);
     
     Task<MagicBag> DeleteMagicBag(Guid id);

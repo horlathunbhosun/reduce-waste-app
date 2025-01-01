@@ -33,6 +33,39 @@ public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMag
 
         }
 
+    public async Task<GenericResponse> CreateProductMagicBagItem(ProductMagicBagItemRequest productMagicBagItemRequest)
+    {
+
+        try
+        {
+            var checkProductMagicBagItem =
+                await magicBagRepository.FindProductMagicItemByProductIdAndMagicBagItem((Guid)productMagicBagItemRequest!.ProductId,
+                    (Guid)productMagicBagItemRequest.MagicBagId);
+
+            if (checkProductMagicBagItem != null)
+            {
+                return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Product Magic Bag Item already exists", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+
+            }
+
+            var createProductMagicBagItem = await magicBagRepository.CreateProductMagicBagItem(productMagicBagItemRequest.ToProductMagicBagItemRequest());
+            if (createProductMagicBagItem == null)
+            {
+                return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag not created", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+            }
+            Console.WriteLine($"MagicBag Created Successfully: {createProductMagicBagItem}");
+            return GenericResponse.FromSuccess(
+                new SuccessResponse("Magic Bag created successfully", createProductMagicBagItem.ToProductMagicBagItemResponse(),
+                    StatusCodes.Status201Created), StatusCodes.Status201Created);
+        }
+        catch (Exception e)
+        {
+            return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", $"Internal Server error {e.Message} {e.Data}", StatusCodes.Status500InternalServerError), StatusCodes.Status500InternalServerError);
+        }
+
+
+    }
+
     public Task<GenericResponse> GetMagicBag(Guid id)
     {
         throw new NotImplementedException();

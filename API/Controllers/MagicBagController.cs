@@ -43,8 +43,28 @@ public class MagicBagController(IMagicBagService magicBagService, IUserService u
         return StatusCode(response.StatusCode, response);
     }
     
-    
-    
+    [HttpGet("get-magicbag/{id}")]
+    public async Task<IActionResult> GetMagicBag(Guid id)
+    {
+        var response = await magicBagService.GetMagicBag(id);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPost("add-magic-bag-item")]
+    public async Task<IActionResult> AddMagicBagItem([FromBody] ProductMagicBagItemRequest productMagicBagItemRequest)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            var responseEr = Constants.ErrorValidation.HanldeError("Validation failed", string.Join("; ", errors), StatusCodes.Status400BadRequest);
+            return StatusCode(responseEr.StatusCode, responseEr);
+        }
+        var response = await magicBagService.CreateProductMagicBagItem(productMagicBagItemRequest);
+        return StatusCode(response.StatusCode, response);
+    }
+
+
+
 
 
     //public async Task<IActionResult> GetMagicBag(Guid id)
