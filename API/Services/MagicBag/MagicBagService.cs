@@ -39,7 +39,7 @@ public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMag
         try
         {
             var checkProductMagicBagItem =
-                await magicBagRepository.FindProductMagicItemByProductIdAndMagicBagItem((Guid)productMagicBagItemRequest!.ProductId,
+                await productMagicBagItemRepository.FindProductMagicItemByProductIdAndMagicBagItem((Guid)productMagicBagItemRequest!.ProductId,
                     (Guid)productMagicBagItemRequest.MagicBagId);
 
             if (checkProductMagicBagItem != null)
@@ -48,7 +48,7 @@ public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMag
 
             }
 
-            var createProductMagicBagItem = await magicBagRepository.CreateProductMagicBagItem(productMagicBagItemRequest.ToProductMagicBagItemRequest());
+            var createProductMagicBagItem = await productMagicBagItemRepository.CreateProductMagicBagItem(productMagicBagItemRequest.ToProductMagicBagItemRequest());
             if (createProductMagicBagItem == null)
             {
                 return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag not created", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);

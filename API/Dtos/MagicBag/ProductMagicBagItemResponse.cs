@@ -6,8 +6,8 @@ public class ProductMagicBagItemResponse
 {
     public Guid Id { get; set; }
 
-    
 
+    public Guid MagicBagId { get; set; } 
     public  MagicBagResponseDto? MagicBag { get; set; }
     
     public  ProductResponseDto? Products { get; set; }

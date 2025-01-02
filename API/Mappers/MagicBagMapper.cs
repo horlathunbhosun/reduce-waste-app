@@ -16,7 +16,7 @@ public static class MagicBagMapper
                 Status = magicBag.Status,
                 Partner = magicBag?.Partner?.ToPartnerResponseDto(),
                 MagicBagItems = magicBag?.MagicBagItems?.Select(x => x.ToProductMagicBagItemResponse()).ToList(),
-                CreatedAt = magicBag.CreatedAt,
+                CreatedAt = magicBag!.CreatedAt,
                 UpdatedAt = magicBag.UpdatedAt
             };
     }
@@ -56,6 +56,8 @@ public static class MagicBagMapper
         {
             Id = productMagicBagItem.Id,
             Products = productMagicBagItem.Products?.ToProductResponseDto(),
+            MagicBagId = (Guid)productMagicBagItem.MagicBagId,
+           //MagicBag = productMagicBagItem.MagicBag?.ToMagicBagResponseDto(),
             Quantity = productMagicBagItem.Quantity,
             CreatedAt = productMagicBagItem.CreatedAt,
             UpdatedAt = productMagicBagItem.UpdatedAt

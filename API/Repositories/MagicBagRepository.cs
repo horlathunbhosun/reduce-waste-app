@@ -30,8 +30,6 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
     {
         return await context.MagicBags
             .Include(m => m.MagicBagItems)
-              .Include(m => m.Partner)
-                .ThenInclude(p => p.User)
                     .Where(m => m.PartnerId == partnerId).ToListAsync();
     }
 

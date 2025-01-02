@@ -1,47 +1,49 @@
 using API.Data;
 using API.Models;
 using API.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories;
 
-public class ProductMagicBagItemRepository : IProductMagicBagItemRepository
+public class ProductMagicBagItemRepository(ApplicationDbContext context) : IProductMagicBagItemRepository
 {
-    private readonly ApplicationDbContext _context;
-    
-    
-    public ProductMagicBagItemRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-    
+
     public async Task<ProductMagicBagItem?> GetProductMagicBagItemById(Guid id)
     {
-        return await _context.ProductMagicBagItems.FindAsync(id);   
+        return await context.ProductMagicBagItems.FindAsync(id);   
     }
 
   
 
     public async Task<ProductMagicBagItem> CreateProductMagicBagItem(ProductMagicBagItem productMagicBagItem)
     {
-        await _context.ProductMagicBagItems.AddAsync(productMagicBagItem);
-        await _context.SaveChangesAsync();
+        await context.ProductMagicBagItems.AddAsync(productMagicBagItem);
+        await context.SaveChangesAsync();
         Console.WriteLine($"Product Magic Bag Item Created Successfully: {productMagicBagItem.Id}");
         return productMagicBagItem;
     }
 
     public async Task<ProductMagicBagItem> UpdateProductMagicBagItem(ProductMagicBagItem productMagicBagItem)
     {
-        var productMagicBagItemExist = await _context.ProductMagicBagItems.FindAsync(productMagicBagItem.Id);
+        var productMagicBagItemExist = await context.ProductMagicBagItems.FindAsync(productMagicBagItem.Id);
         if (productMagicBagItemExist == null)
         {
             throw new InvalidOperationException("Product Magic Bag Item does not exist");
         }
-        
-        _context.Entry(productMagicBagItemExist).CurrentValues.SetValues(productMagicBagItem);
-        _context.ProductMagicBagItems.Update(productMagicBagItemExist);
+
+        context.Entry(productMagicBagItemExist).CurrentValues.SetValues(productMagicBagItem);
+        context.ProductMagicBagItems.Update(productMagicBagItemExist);
         Console.WriteLine($"Product Magic Bag Item Updated Successfully: {productMagicBagItem.Id}");
         return productMagicBagItemExist;
     }
 
-  
+
+    public async Task<ProductMagicBagItem?> FindProductMagicItemByProductIdAndMagicBagItem(Guid productId, Guid magicBagId)
+    {
+        var productMagicBagItem = await context.ProductMagicBagItems.FirstOrDefaultAsync(p => p.ProductId == productId && p.MagicBagId == magicBagId);
+
+        return productMagicBagItem;
+    }
+
+
 }

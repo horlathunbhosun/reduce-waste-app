@@ -35,8 +35,15 @@ public class ApplicationDbContext : IdentityDbContext<Users>
         };
 
         modelBuilder.Entity<IdentityRole>().HasData(roles);
-        
-        modelBuilder.Entity<ProductMagicBagItem>(x =>  x.HasKey(p => new {p.MagicBagId, p.ProductId}));
+
+
+        //modelBuilder.Entity<ProductMagicBagItem>(x =>  x.HasKey(p => new {p.MagicBagId, p.ProductId, p.Id}));
+        modelBuilder.Entity<ProductMagicBagItem>()
+            .HasKey(p => p.Id); // Set Id as the primary key
+
+        modelBuilder.Entity<ProductMagicBagItem>()
+            .HasIndex(p => new { p.MagicBagId, p.ProductId })
+            .IsUnique();
 
         modelBuilder.Entity<ProductMagicBagItem>()
             .HasOne(p => p.MagicBag)
