@@ -24,14 +24,14 @@
           <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
             <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Name</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput formControlName="token" />
-              @if(f['token'].touched && f['token'].invalid) {
+              <input matInput formControlName="name" />
+              @if(f['name'].touched && f['name'].invalid) {
                 <mat-hint class="m-b-16 error-msg">
-                  @if(f['token'].errors &&
-                  f['token'].errors['required']) {
+                  @if(f['name'].errors &&
+                  f['name'].errors['required']) {
                     <div class="text-error">Name is required.</div>
-                  } @if(f['token'].errors &&
-                f['token'].errors['minlength']) {
+                  } @if(f['name'].errors &&
+                f['name'].errors['minlength']) {
                   <div class="text-error">
 
                   </div>
@@ -42,7 +42,15 @@
 
             <mat-form-field appearance="outline" class="w-100" color="primary">
               <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Description</mat-label>
-              <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+              <textarea matInput formControlName="description" placeholder="Ex. Descriptions "></textarea>
+              @if(f['description'].touched && f['description'].invalid) {
+                <mat-hint class="m-b-16 error-msg">
+                  @if(f['description'].errors &&
+                  f['description'].errors['required']) {
+                    <div class="text-error">Description is required.</div>
+                  }
+                </mat-hint>
+              }
             </mat-form-field>
 
             <div style="padding-bottom: 20px!important;">

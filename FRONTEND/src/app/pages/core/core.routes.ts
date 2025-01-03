@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import {ProductComponent} from "./product/product.component";
+import {MagicBagComponent} from "./magic-bag/magic-bag.component";
 
 // ui
 
@@ -15,6 +16,11 @@ export const CoreRoutes: Routes = [
         path: 'product',
         component: ProductComponent,
       },
+
+      {
+        path: 'magic-bag',
+        component: MagicBagComponent
+      }
 
     ],
   },

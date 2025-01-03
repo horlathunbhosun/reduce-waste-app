@@ -3,6 +3,8 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {MatButton} from "@angular/material/button";
 import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {ProductService} from "../../../../services/product.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-product-create',
@@ -20,11 +22,12 @@ import {MatInput} from "@angular/material/input";
   styleUrl: './product-create.component.scss'
 })
 export class ProductCreateComponent {
- constructor() {
+ constructor(private productService : ProductService, private router : Router ) {
  }
 
   form = new FormGroup({
-    token: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    name: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    description: new FormControl('', [Validators.required]),
   });
 
 
@@ -35,11 +38,16 @@ export class ProductCreateComponent {
   submit() {
     console.log(this.form.value);
 
-    // this.authService.verify(this.form.controls['token'].value).subscribe(res => {
-    //     console.log(res);
-    //   }
-    // )
-    // this.router.navigate(['/authentication/login']);
+    const payload = {
+      Name : this.form.controls['name'].value,
+      Description : this.form.controls['description'].value,
+    }
+
+    this.productService.create(payload).subscribe(
+      res => { console.log(res)}
+
+    )
+     this.router.navigate(['/core/product']);
   }
 
 }
