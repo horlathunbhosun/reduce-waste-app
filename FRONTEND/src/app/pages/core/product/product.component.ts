@@ -3,6 +3,8 @@ import {MatTableModule} from "@angular/material/table";
 import {Router, Routes} from "@angular/router";
 import {ProductCreateComponent} from "./product-create/product-create.component";
 import {MatDialog} from "@angular/material/dialog";
+import {MatButton, MatFabButton} from "@angular/material/button";
+import {CdkAccordion} from "@angular/cdk/accordion";
 
 
 export interface PeriodicElement {
@@ -28,7 +30,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [MatTableModule],
+  imports: [MatTableModule, MatFabButton, MatButton, CdkAccordion],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
 
