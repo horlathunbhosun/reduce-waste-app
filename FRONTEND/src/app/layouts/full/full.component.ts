@@ -40,7 +40,11 @@ const BELOWMONITOR = 'screen and (max-width: 1023px)';
 
 export class FullComponent implements OnInit {
 
-  navItems = navItems;
+  usertype = JSON.parse(localStorage.getItem('user') || '{}');
+  navItems = navItems.filter((item: any) => item?.roles?.includes(this.usertype?.userType));
+
+
+
 
   @ViewChild('leftsidenav')
   public sidenav: MatSidenav | any;
@@ -69,12 +73,14 @@ export class FullComponent implements OnInit {
 
         this.isContentWidthFixed = state.breakpoints[MONITOR_VIEW];
       });
+
+    console.log(this.usertype)
   }
 
   ngOnInit(): void { }
 
   ngOnDestroy() {
-    this.layoutChangesSubscription.unsubscribe(); 
+    this.layoutChangesSubscription.unsubscribe();
   }
 
   toggleCollapsed() {

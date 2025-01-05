@@ -21,6 +21,11 @@ export const CoreRoutes: Routes = [
         path: 'magic-bag',
         component: MagicBagComponent
       }
+      //
+      // {
+      //   path: 'magic-bag/:id',
+      //   component: MagicBagComponent
+      // }
 
     ],
   },

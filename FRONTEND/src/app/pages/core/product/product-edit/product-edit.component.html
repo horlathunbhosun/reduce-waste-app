@@ -7,25 +7,20 @@
       <div class="row justify-content-center w-100">
         <div class="col-lg-11" style="padding: 20px!important;">
           <h4 class="f-w-700 f-s-30 m-0 m-t-20 lh-base text-center" >
-            Add product
+            Edit product
           </h4>
 
 
-          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="update()">
             <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Name</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput formControlName="name" />
+              <input matInput formControlName="name"   />
               @if(f['name'].touched && f['name'].invalid) {
                 <mat-hint class="m-b-16 error-msg">
                   @if(f['name'].errors &&
                   f['name'].errors['required']) {
                     <div class="text-error">Name is required.</div>
-                  } @if(f['name'].errors &&
-                f['name'].errors['minlength']) {
-                  <div class="text-error">
-
-                  </div>
-                }
+                  }
                 </mat-hint>
               }
             </mat-form-field>
@@ -46,7 +41,7 @@
             <div style="padding-bottom: 20px!important;">
 
               <button mat-flat-button color="primary" class="w-100" [disabled]="!form.valid" >
-                Create
+                Update
               </button>
             </div>
 

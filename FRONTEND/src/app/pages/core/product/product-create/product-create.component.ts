@@ -5,6 +5,7 @@ import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {ProductService} from "../../../../services/product.service";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-product-create',
@@ -22,7 +23,7 @@ import {Router} from "@angular/router";
   styleUrl: './product-create.component.scss'
 })
 export class ProductCreateComponent {
- constructor(private productService : ProductService, private router : Router ) {
+ constructor(private productService : ProductService, private router : Router, private dialog : MatDialog ) {
  }
 
   form = new FormGroup({
@@ -44,10 +45,19 @@ export class ProductCreateComponent {
     }
 
     this.productService.create(payload).subscribe(
-      res => { console.log(res)}
+      res => {
+
+        console.log(res)
+        this.form.reset();
+        this.closeModal();
+      }
 
     )
-     this.router.navigate(['/core/product']);
+     // this.router.navigate(['/core/product']);
+  }
+
+  closeModal() {
+    this.dialog.closeAll();
   }
 
 }

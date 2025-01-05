@@ -1,50 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {MatTableModule} from "@angular/material/table";
 import {Router, Routes} from "@angular/router";
 import {ProductCreateComponent} from "./product-create/product-create.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {CdkAccordion} from "@angular/cdk/accordion";
+import {ProductService} from "../../../services/product.service";
+import { MatMenuModule } from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {ProductEditComponent} from "./product-edit/product-edit.component";
+import {ToastrService} from "ngx-toastr";
 
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
 // @ts-ignore
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [MatTableModule, MatFabButton, MatButton, CdkAccordion],
+  imports: [MatTableModule, MatFabButton, MatButton, CdkAccordion, MatMenuModule,MatIconModule,MatButtonModule],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
-
 })
 
 
 
 
-export class ProductComponent {
-    constructor(private  route: Router , private dialog : MatDialog) {
+export class ProductComponent implements OnInit {
+
+  displayedColumns: string[] = ['name', 'description', 'action'];
+  dataSource = [];
+
+    constructor(private  route: Router , private dialog : MatDialog, private product :ProductService,
+                private toastr: ToastrService
+                ) {
     }
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
+  ngOnInit(): void {
+      this.getAllProducts();
+  }
+
 
 
   openDialog(): void {
@@ -58,6 +51,35 @@ export class ProductComponent {
       //   this.animal.set(result);
       // }
     });
+  }
+  getAllProducts() {
+    this.product.getAll().subscribe((res : any)  => {
+      console.log(res.success.data)
+      this.dataSource = res.success.data;
+    })
+  }
+
+  editProduct(elements: any) {
+
+    const dialogRef = this.dialog.open(ProductEditComponent, {
+      data: elements
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+
+      this.getAllProducts();
+      // if (result !== undefined) {
+      //   this.animal.set(result);
+      // }
+    });
+
+
+  }
+
+  deleteProduct(elements: any) {
+    console.log("delete")
   }
 
 

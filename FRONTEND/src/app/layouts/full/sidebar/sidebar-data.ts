@@ -1,17 +1,28 @@
 import { NavItem } from './nav-item/nav-item';
 
+
+
+
+
+
 export const navItems: NavItem[] = [
   {
     navCap: 'Home',
+    roles: ['Admin','Partner', "User"],
+
   },
   {
     displayName: 'Dashboard',
     iconName: 'layout-dashboard',
     bgcolor: 'primary',
     route: '/dashboard',
+    roles: ['Admin','Partner', "User"],
+
   },
   {
-    navCap: 'Ui ',
+    navCap: 'Core ',
+    roles: ['Admin','Partner', "User"],
+
   },
 
 
@@ -20,7 +31,17 @@ export const navItems: NavItem[] = [
     iconName: 'brand-producthunt',
     bgcolor: 'accent',
     route: '/core/product',
+    roles: ['Admin','Partner'],
   },
+
+  {
+    displayName: 'Magic Bags',
+    iconName: 'brand-producthunt',
+    bgcolor: 'accent',
+    route: '/core/magic-bag',
+    roles: ['Admin','Partner'],
+  },
+
   {
     displayName: 'Badge',
     iconName: 'rosette',
