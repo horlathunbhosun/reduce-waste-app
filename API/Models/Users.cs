@@ -25,4 +25,6 @@ public class Users : IdentityUser
 
     public DateTime UpdatedAt { get; set; }
 
+    public  List<Transactions>? UserTransactions { get; set; }
+
 }
