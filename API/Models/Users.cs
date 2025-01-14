@@ -27,4 +27,5 @@ public class Users : IdentityUser
 
     public  List<Transactions>? UserTransactions { get; set; }
 
+public  List<Feedback>? UserFeedback { get; set; }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public class Transactions
+    public class Feedback
     {
         [Key]
         public Guid Id { get; set; }
@@ -17,16 +17,15 @@ namespace API.Models
 
         public virtual Users? Users { get; set; }
 
-        [ForeignKey("MagicBag")]
-        public Guid? MagicBagId { get; set; }
+        [ForeignKey("Transactions")]
+        public Guid? TransactionId { get; set; }
 
-        public virtual MagicBag? MagicBag { get; set; }
+        public virtual Transactions? Transactions { get; set; }
 
-        public DateTime TransactionDate { get; set; }
-        
-        [Column(TypeName = "double(12,2)")]
-        public double Amount { get; set; }
+        public int Rating { get; set; }
 
-        public DateTime PickUpdateDate { get; set; }
+        public  string? Comment { get; set; }
+
+        public DateTime RateDate { get; set; }
     }
 }
