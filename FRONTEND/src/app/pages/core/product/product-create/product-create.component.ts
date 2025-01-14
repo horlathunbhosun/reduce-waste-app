@@ -6,6 +6,7 @@ import {MatInput} from "@angular/material/input";
 import {ProductService} from "../../../../services/product.service";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-product-create',
@@ -23,7 +24,8 @@ import {MatDialog} from "@angular/material/dialog";
   styleUrl: './product-create.component.scss'
 })
 export class ProductCreateComponent {
- constructor(private productService : ProductService, private router : Router, private dialog : MatDialog ) {
+ constructor(private productService : ProductService, private router : Router, private dialog : MatDialog,
+             private toastr: ToastrService) {
  }
 
   form = new FormGroup({
@@ -47,9 +49,13 @@ export class ProductCreateComponent {
     this.productService.create(payload).subscribe(
       res => {
 
+        this.toastr.success('Product Created Successfully');
+
         console.log(res)
         this.form.reset();
         this.closeModal();
+        //reload the page
+        this.router.navigate(['/core/product']);
       }
 
     )

@@ -68,6 +68,8 @@ export class ProductEditComponent implements OnInit {
 
         this.form.reset();
         this.closeModal();
+        this.router.navigate(['/core/product']);
+
       }
     )
     // this.router.navigate(['/core/product']);

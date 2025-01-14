@@ -11,6 +11,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {ProductEditComponent} from "./product-edit/product-edit.component";
 import {ToastrService} from "ngx-toastr";
+import {ProductDeleteComponent} from "./product-delete/product-delete.component";
 
 // @ts-ignore
 @Component({
@@ -67,19 +68,24 @@ export class ProductComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-
-
       this.getAllProducts();
-      // if (result !== undefined) {
-      //   this.animal.set(result);
-      // }
     });
 
 
   }
 
   deleteProduct(elements: any) {
-    console.log("delete")
+    const dialogRef = this.dialog.open(ProductDeleteComponent, {
+      data: elements
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+      this.getAllProducts();
+
+    });
+
   }
 
 

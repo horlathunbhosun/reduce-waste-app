@@ -40,5 +40,14 @@ export class ProductService {
   }
 
 
+  delete (id : string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+    return this.Http.delete(`${this.baseUrl}/product/${id}/delete`, {headers})
+  }
+
+
 
 }
