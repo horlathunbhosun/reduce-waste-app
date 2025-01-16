@@ -10,7 +10,7 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
 
     public async Task<MagicBag?> GetMagicBagById(Guid id)
     {
-        return await context.MagicBags.Include("MagicBagItems").Include("Partners").FirstOrDefaultAsync(m => m.Id == id);
+        return await context.MagicBags.Include("MagicBagItems").Include("Partner").FirstOrDefaultAsync(m => m.Id == id);
     }
 
     public async Task<MagicBag?> GetMagicBagByName(string? name)
@@ -48,6 +48,11 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
       Console.WriteLine($"ProductMagicBagItem Created Successfully: {productMagicBagItem.Id}");
       return productMagicBagItem;
     }
+    
+    public async Task<bool> PartnerExists(int partnerId)
+    {
+        return await context.Partners.AnyAsync(p => p.Id == partnerId);
+    }
 
     public async Task<ProductMagicBagItem?> FindProductMagicItemByProductIdAndMagicBagItem(Guid productId, Guid magicBagId)
     {
@@ -56,18 +61,26 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
        return productMagicBagItem;
     }
 
-    public async Task<MagicBag> UpdateMagicBag(MagicBag magicBag)
+    public async Task<MagicBag> UpdateMagicBag(MagicBag magicBag,  Guid id)
     {
-        var magicBagExist = await context.MagicBags.FindAsync(magicBag.Id);
+        var magicBagExist = await context.MagicBags.FirstOrDefaultAsync(m => m.Id == id);
         if (magicBagExist == null)
         {
             throw new InvalidOperationException("MagicBag does not exist");
         }
+        // Manually update properties except for the Id
+        magicBagExist.Name = magicBag.Name;
+        magicBagExist.Description = magicBag.Description;
+        magicBagExist.BagPrice = magicBag.BagPrice;
+        // Update other properties as needed
+        // context.Entry(magicBagExist).CurrentValues.SetValues(magicBag);
+        // context.Entry(magicBagExist).Property(m => m.Id).IsModified = false;
 
-        context.Entry(magicBagExist).CurrentValues.SetValues(magicBag);
         context.MagicBags.Update(magicBagExist);
-        Console.WriteLine($"MagicBag Updated Successfully: {magicBag.Id}");
+        await context.SaveChangesAsync();
+        // Console.WriteLine($"MagicBag Updated Successfully: {magicBag.Id}");
         return magicBagExist;
+        
     }
 
     public Task<MagicBag> DeleteMagicBag(Guid id)

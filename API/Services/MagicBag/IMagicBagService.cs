@@ -17,7 +17,7 @@ public interface IMagicBagService
 
     Task<GenericResponse> UpdateMagicBag(Guid id,MagicBagRequestDto magicBagRequestDto);
     
-    Task<GenericResponse> DeleteMagicBag(Guid id);
+    GenericResponse DeleteMagicBag(Guid id);
     
     
 }

@@ -10,6 +10,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 import { MatButtonModule } from '@angular/material/button';
 import {AuthService} from "../../../services/auth.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-side-login',
@@ -24,7 +25,7 @@ import {AuthService} from "../../../services/auth.service";
   templateUrl: './side-login.component.html',
 })
 export class AppSideLoginComponent {
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService,private toastr : ToastrService) { }
 
   form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -47,9 +48,12 @@ export class AppSideLoginComponent {
       console.log(res.success.data)
       localStorage.setItem('token', res.success.data.token)
       localStorage.setItem('user', JSON.stringify(res.success.data.userResponseDto))
-      this.router.navigate(['/dashboard']);
+      this.toastr.success(res.success.message);
+      this.router.navigate(['/dashboard'])
     }, (error) => {
-      console.log(error)
+      console.log(error.error)
+
+      this.toastr.error(error.error.error.message);
 
     });
 

@@ -63,6 +63,7 @@ public static class UserMapper
             return new PartnerResponseDto
             {
                 Id = partner.Uuid,
+                PartnerId = partner.Id,
                 BusinessNumber = partner.BusinessNumber,
                 Logo = partner.Logo,
                 Address = partner.Address,

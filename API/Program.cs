@@ -37,7 +37,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => {
     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);
     options.UseMySql(connectionString, mysqlServerVersion);
 });
-//uncomment if you are using SqlServe
+
+//uncomment if you are using SqlServer
 // builder.Services.AddDbContext<ApplicationDbContext>(options => {
 //     var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
 //     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);

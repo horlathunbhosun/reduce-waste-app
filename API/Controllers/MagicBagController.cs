@@ -26,11 +26,32 @@ public class MagicBagController(IMagicBagService magicBagService, IUserService u
         var response = await magicBagService.CreateMagicBag(magicBagRequestDto);
         return StatusCode(response.StatusCode, response);
     }
+
+    [HttpPatch("{id}/update")]
+    public async Task<IActionResult> CreateMagicBag([FromRoute] Guid id, [FromBody] MagicBagRequestDto magicBagRequestDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            var responseEr = Constants.ErrorValidation.HanldeError("Validation failed", string.Join("; ", errors), StatusCodes.Status400BadRequest );
+            return StatusCode(responseEr.StatusCode, responseEr);
+        }
+        var response = await magicBagService.UpdateMagicBag(id, magicBagRequestDto);
+        return StatusCode(response.StatusCode, response);
+    }
+    
     
     [HttpGet("get-all")]
     public async Task<IActionResult> GetAllMagicBags()
     {
         var response = await magicBagService.GetAllMagicBags();
+        return StatusCode(response.StatusCode, response);
+    }
+    
+    [HttpDelete("{id}/delete")]
+    public  IActionResult DeleteProduct([FromRoute] Guid id)
+    {
+        var response = magicBagService.DeleteMagicBag(id);
         return StatusCode(response.StatusCode, response);
     }
 

@@ -14,9 +14,11 @@ public interface IMagicBagRepository
     
     Task<MagicBag> CreateMagicBag(MagicBag magicBag);
     
+    
+    Task<bool> PartnerExists(int partnerId);
 
 
-    Task<MagicBag> UpdateMagicBag(MagicBag magicBag);
+    Task<MagicBag> UpdateMagicBag(MagicBag magicBag, Guid id);
     
     Task<MagicBag> DeleteMagicBag(Guid id);
 }

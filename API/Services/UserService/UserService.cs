@@ -152,21 +152,21 @@ public class UserService : IUserService
          if (userCheck == null)
          {
              return GenericResponse.FromError(new ErrorResponse("Invalid Email address ", "Invalid Email Address",
-                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+                 StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
          }
 
          var checkPassword = await _signinManager.CheckPasswordSignInAsync(userCheck, loginRequestDto.Password!, false);
          if (!checkPassword.Succeeded)
          {
              return GenericResponse.FromError(new ErrorResponse("Invalid Email address and password ", "Invalid Email address and password",
-                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound);
+                 StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
          }
 
          var checkUserVerified = userCheck is { IsVerified: true, Status: Status.Activated };
          if (checkUserVerified == false) 
          {
              return GenericResponse.FromError(new ErrorResponse("Account not verified ", "You need to be verified to login",
-                 StatusCodes.Status404NotFound), StatusCodes.Status404NotFound); 
+                 StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest); 
          }
 
          var createToken = _tokenService.CreateToken(userCheck);

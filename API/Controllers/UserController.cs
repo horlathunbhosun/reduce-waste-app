@@ -21,7 +21,6 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var userDetail = await userService.UserProfile(GetEmail());        
         return StatusCode(StatusCodes.Status200OK, userDetail);
-     
     }
     
     

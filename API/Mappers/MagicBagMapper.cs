@@ -10,6 +10,7 @@ public static class MagicBagMapper
             return new MagicBagResponseDto
             {
                 Id = magicBag.Id,
+                
                 Name = magicBag.Name,
                 Description = magicBag.Description,
                 BagPrice = magicBag.BagPrice,
@@ -30,6 +31,19 @@ public static class MagicBagMapper
             BagPrice = magicBagRequestDto.BagPrice,
             PartnerId = magicBagRequestDto.PartnerId,
            // MagicBagItems = magicBagRequestDto.MagicBagItems?.Select(x => x.ToProductMagicBagItemRequest()).ToList(),
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now,
+        };
+    }
+    
+    public static MagicBag ToMagicBagRequestDtoUpdate(this MagicBagRequestDto magicBagRequestDto)
+    {
+        return new MagicBag()
+        {
+            Name = magicBagRequestDto.Name,
+            Description = magicBagRequestDto.Description,
+            BagPrice = magicBagRequestDto.BagPrice,
+        // MagicBagItems = magicBagRequestDto.MagicBagItems?.Select(x => x.ToProductMagicBagItemRequest()).ToList(),
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
         };

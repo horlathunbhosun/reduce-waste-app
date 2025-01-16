@@ -15,7 +15,13 @@ public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMag
                 {
                   return  GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag already exist",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
                 }
-                
+                // Check if the PartnerId exists
+                var partnerExists = await magicBagRepository.PartnerExists(magicBagRequestDto.PartnerId);
+                if (!partnerExists)
+                {
+                    return GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Partner does not exist", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+                }
+
                 var createMagicBag = await magicBagRepository.CreateMagicBag(magicBagRequestDto.ToMagicBagRequestDto());
                 if (createMagicBag == null)
                 {
@@ -100,13 +106,35 @@ public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMag
                 StatusCodes.Status200OK), StatusCodes.Status200OK);
     }
 
-    public Task<GenericResponse> UpdateMagicBag(Guid id, MagicBagRequestDto magicBagRequestDto)
+    public async Task<GenericResponse> UpdateMagicBag(Guid id, MagicBagRequestDto magicBagRequestDto)
     {
-        throw new NotImplementedException();
+        var magicBag = await magicBagRepository.GetMagicBagById(id);
+        if (magicBag == null)
+        {
+            return GenericResponse.FromError(new ErrorResponse("An Error occured", "Magic Bag does not exist", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+        }
+        
+        var updateMagicBag = await magicBagRepository.UpdateMagicBag(magicBagRequestDto.ToMagicBagRequestDtoUpdate(), id);
+        
+        if (updateMagicBag == null)
+        {
+            return  GenericResponse.FromError(new ErrorResponse("An Error occured magic bag not created", "Magic bag not created",StatusCodes.Status400BadRequest ), StatusCodes.Status400BadRequest);
+        }
+        Console.WriteLine($"MagicBag Created Successfully: {updateMagicBag}");
+        return GenericResponse.FromSuccess(
+            new SuccessResponse("Magic Bag updated successfully", updateMagicBag.ToMagicBagResponseDto(),
+                StatusCodes.Status201Created), StatusCodes.Status201Created);
     }
 
-    public Task<GenericResponse> DeleteMagicBag(Guid id)
+    public GenericResponse DeleteMagicBag(Guid id)
     {
-        throw new NotImplementedException();
+        var deleteMagicBag = magicBagRepository.DeleteMagicBag(id);
+        if (deleteMagicBag == null)
+        {
+            return GenericResponse.FromError(new ErrorResponse("An Error occured", "Magic Bag does not exist", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+        }
+        return GenericResponse.FromSuccess(
+            new SuccessResponse("Magic Bag deleted successfully", "",
+                StatusCodes.Status200OK), StatusCodes.Status200OK);
     }
 }

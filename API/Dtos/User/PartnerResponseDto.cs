@@ -5,6 +5,8 @@ public class PartnerResponseDto
 {
     
     public Guid Id { get; set; }
+    
+    public int PartnerId { get; set; }
 
     //Navigation Property
     public UserResponseDto?  User { get; set; }
