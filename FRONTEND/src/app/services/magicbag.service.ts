@@ -46,4 +46,13 @@ export class MagicbagService {
     return this.Http.patch(`${this.baseUrl}/magic-bag/${id}/update`, payload, {headers})
   }
 
+  delete (id : string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+    return this.Http.delete(`${this.baseUrl}/magic-bag/${id}/delete`, {headers})
+  }
+
+
 }

@@ -1,7 +1,7 @@
 
 
 <button mat-fab color="primary" class="w-100" extended (click)="openDialog()" style="margin-bottom: 20px!important;">
-  Create magic bag
+  Create magic bag Item
 </button>
 
 <div *ngIf="dataSourcer">
@@ -50,15 +50,15 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item  (click)="editMagicBag(element)">
+          <button mat-menu-item  >
             <mat-icon>edit</mat-icon>
             <span>Edit</span>
           </button>
-          <button mat-menu-item   (click)="openMagicBagProductItem(element)">
+          <button mat-menu-item   >
             <mat-icon>plus</mat-icon>
             <span>Add MagItem </span>
           </button>
-          <button mat-menu-item  (click)="deleteMagicBag(element)" >
+          <button mat-menu-item   >
             <mat-icon>backspace</mat-icon>
             <span>Delete </span>
           </button>

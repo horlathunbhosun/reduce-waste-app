@@ -54,7 +54,7 @@ export class ProductDeleteComponent implements OnInit {
         res => {
           console.log(res)
 
-          this.toastr.success('Product Deleted Successfully');
+          this.toastr.success('Magic Bag Deleted Successfully');
 
           this.form.reset();
           this.closeModal();

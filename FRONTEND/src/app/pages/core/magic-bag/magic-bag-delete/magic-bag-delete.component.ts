@@ -47,7 +47,7 @@ export class MagicBagDeleteComponent implements OnInit {
 
   deleteMagicBag() {
     console.log("date", this.dataDelete);
-    this.productService.delete(this.dataDelete.id).subscribe(
+    this.magicbag.delete(this.dataDelete.id).subscribe(
       res => {
         console.log(res)
 

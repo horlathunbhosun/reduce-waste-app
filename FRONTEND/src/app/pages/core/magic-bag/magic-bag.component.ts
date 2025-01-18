@@ -109,8 +109,6 @@ export class MagicBagComponent  implements OnInit {
       console.log('The dialog was closed');
       this.getAllMagicBags();
     });
-
-
   }
 
   deleteMagicBag(elements: any) {
@@ -125,6 +123,10 @@ export class MagicBagComponent  implements OnInit {
 
     });
 
+  }
+
+  openMagicBagProductItem(elements: any) {
+    this.router.navigate([`/core/magic-bag/${elements.id}/item`]);
   }
 
 }

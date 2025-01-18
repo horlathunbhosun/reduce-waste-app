@@ -61,7 +61,7 @@ export class MagicBagEditComponent  implements OnInit {
     const payload = {
       Name: this.form.controls['name'].value,
       Description: this.form.controls['description'].value,
-      Price : this.form.controls['price'].value,
+      BagPrice : this.form.controls['price'].value,
       PartnerId :usertype?.partner.partnerId
     }
 
@@ -73,7 +73,7 @@ export class MagicBagEditComponent  implements OnInit {
 
         this.form.reset();
         this.closeModal();
-        this.router.navigate(['/core/product']);
+        this.router.navigate(['/core/magic-bag']);
 
       }
     )

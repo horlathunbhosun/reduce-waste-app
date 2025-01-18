@@ -1,0 +1,54 @@
+
+
+<div class="row">
+
+  <div class="col-lg-12 p-5" >
+    <div class="d-flex align-items-start align-items-lg-center justify-content-center">
+      <div class="row justify-content-center w-100">
+        <div class="col-lg-11" style="padding: 20px!important;">
+          <h4 class="f-w-700 f-s-30 m-0 m-t-20 lh-base text-center" >
+            Add Product Magic Bag Item
+          </h4>
+
+
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Quantity</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="quanity"  type="number"/>
+              @if(f['quanity'].touched && f['quanity'].invalid) {
+                <mat-hint class="m-b-16 error-msg">
+                  @if(f['quanity'].errors &&
+                  f['quanity'].errors['required']) {
+                    <div class="text-error">Quanity is required.</div>
+                  }
+                </mat-hint>
+              }
+            </mat-form-field>
+
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Product</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <mat-select formControlName="productID">
+                <mat-option  selected>
+                  Select Product
+                </mat-option>
+                <mat-option *ngFor="let product of toppingList" [value]="product.id">
+                  {{ product.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+
+            <div style="padding-bottom: 20px!important;">
+
+              <button mat-flat-button color="primary" class="w-100" [disabled]="!form.valid" >
+                Create
+              </button>
+            </div>
+
+            <!-- input -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

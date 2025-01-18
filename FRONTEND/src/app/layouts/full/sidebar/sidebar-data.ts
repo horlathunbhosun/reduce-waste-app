@@ -25,6 +25,14 @@ export const navItems: NavItem[] = [
 
   },
 
+  {
+    displayName: 'Products Waste',
+    iconName: 'brand-producthunt',
+    bgcolor: 'accent',
+    route: '/core/product',
+    roles: ['User'],
+  },
+
 
   {
     displayName: 'Products',
@@ -40,6 +48,14 @@ export const navItems: NavItem[] = [
     bgcolor: 'accent',
     route: '/core/magic-bag',
     roles: ['Admin','Partner'],
+  },
+
+  {
+    displayName: 'Transactions',
+    iconName: 'brand-producthunt',
+    bgcolor: 'accent',
+    route: '/core/transactions',
+    roles: ['Admin','Partner', 'User'],
   },
 
   {
