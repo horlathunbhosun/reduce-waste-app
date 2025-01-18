@@ -30,4 +30,6 @@ public class MagicBag
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
+
+    public virtual Transactions? UserTransaction { get; set; }
 }

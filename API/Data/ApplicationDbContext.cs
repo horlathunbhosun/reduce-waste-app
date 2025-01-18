@@ -22,6 +22,8 @@ public class ApplicationDbContext : IdentityDbContext<Users>
     public DbSet<MagicBag> MagicBags { get; set; }
     
     public DbSet<ProductMagicBagItem> ProductMagicBagItems { get; set; }
+
+    public DbSet<Transactions> Transactions { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -75,8 +77,51 @@ public class ApplicationDbContext : IdentityDbContext<Users>
             .HasIndex(u => u.Email)
             .IsUnique();
 
+        modelBuilder.Entity<Transactions>()
+            .HasKey(p => p.Id);  // Set Id as the primary key
+
+        modelBuilder.Entity<Transactions>()
+            .HasIndex(p => new { p.UserId, p.MagicBagId })
+            .IsUnique();
         
+        modelBuilder.Entity<Transactions>()
+            .HasOne(p => p.Users)
+            .WithMany(m => m.UserTransactions)
+            .HasForeignKey(p => p.UserId);
+
+        modelBuilder.Entity<Transactions>()
+                .HasIndex(p => p.MagicBagId)
+                .IsUnique();
+
+        modelBuilder.Entity<Feedback>()
+            .HasKey(p => p.Id);
+
+        modelBuilder.Entity<Feedback>()
+            .HasIndex(p => new { p.UserId, p.TransactionId })
+            .IsUnique();
+
+        modelBuilder.Entity<Feedback>()
+                .HasIndex(p => p.UserId)
+                .IsUnique();
+
+        modelBuilder.Entity<Feedback>()
+            .HasOne(p => p.Users)
+            .WithMany(m => m.UserFeedback)
+            .HasForeignKey(p => p.UserId);
+
+        modelBuilder.Entity<Feedback>()
+                .HasIndex(p => p.TransactionId)
+                .IsUnique();
+
         
+
+
+   
+
+        //  modelBuilder.Entity<Transactions>()
+        //     .HasOne(p => p.MagicBag)
+        //     .WithOne(m => m.UserTransaction)
+        //     .HasForeignKey<Transactions>(p => p.MagicBagId);
        
     }
     
