@@ -7,12 +7,17 @@ using API.Services.UserService;
 using API.Services.Email;
 using API.Services.MagicBag;
 using API.Services.Product;
+using API.Services.Stripe;
 using API.Services.Token;
+using API.Services.Transactions;
 using API.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
+using ProductService = API.Services.Product.ProductService;
+using TokenService = API.Services.Token.TokenService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -129,9 +134,16 @@ builder.Services.AddScoped<IProductMagicBagItemRepository, ProductMagicBagItemRe
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+builder.Services.AddScoped<IStripeService,StripeService>();
+
 
 builder.Services.AddAuthorization(options =>
 {
@@ -140,7 +152,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Partner", policy=> policy.RequireRole("Partner"));
 });
 
+
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

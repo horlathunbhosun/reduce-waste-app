@@ -5,8 +5,10 @@ namespace API.Repositories.Interface;
 public interface IMagicBagRepository
 {
     Task<MagicBag?> GetMagicBagById(Guid id);
-    
+    Task<MagicBag?> GetMagicBagByIdNew(Guid id);
+
     Task<MagicBag?> GetMagicBagByName(string? name);
+    
     
     Task<List<MagicBag>> GetAllMagicBags();
     

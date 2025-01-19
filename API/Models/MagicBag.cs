@@ -27,6 +27,8 @@ public class MagicBag
     
     public string? Status { get; set; } = "Active";
     
+    public virtual Transactions? UserTransaction { get; set; }
+    
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

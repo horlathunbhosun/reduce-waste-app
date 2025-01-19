@@ -20,6 +20,10 @@ public class Users : IdentityUser
     public Status Status { get; set; } = Status.Pending;
 
     public virtual Partner? Partner { get; set; }
+    
+    public  List<Transactions>? UserTransactions { get; set; }
+
+    public  List<Feedback>? UserFeedback { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

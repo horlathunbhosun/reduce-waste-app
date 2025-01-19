@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 
-[Authorize(Roles = "Partner,Admin")]
+[Authorize(Roles = "Partner,Admin,User")]
 [Route("api/magic-bag")]
 [ApiController]
 public class MagicBagController(IMagicBagService magicBagService, IUserService userService) : ControllerBase
@@ -49,6 +49,7 @@ public class MagicBagController(IMagicBagService magicBagService, IUserService u
     }
     
     [HttpDelete("{id}/delete")]
+    
     public  IActionResult DeleteProduct([FromRoute] Guid id)
     {
         var response = magicBagService.DeleteMagicBag(id);

@@ -35,6 +35,7 @@ public class ProductController(IProductService productService) : ControllerBase
     
     
     [HttpGet("all")]
+  
     public async Task<IActionResult> GetAllProducts()
     {
         var response = await productService.GetAllProducts();

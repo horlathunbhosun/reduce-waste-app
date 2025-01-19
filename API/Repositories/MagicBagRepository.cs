@@ -12,6 +12,13 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
     {
         return await context.MagicBags.Include("MagicBagItems").Include("Partner").FirstOrDefaultAsync(m => m.Id == id);
     }
+    
+    public async Task<MagicBag?> GetMagicBagByIdNew(Guid id)
+    {
+        return await context.MagicBags.FirstOrDefaultAsync(m => m.Id == id);
+    }
+    
+    
 
     public async Task<MagicBag?> GetMagicBagByName(string? name)
     {
@@ -23,14 +30,18 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
         return await context.MagicBags
                 .Include(m => m.MagicBagItems)
                  .Include(m => m.Partner)
-                    .ThenInclude(p => p.User).ToListAsync();
+                    .ThenInclude(p => p.User)
+                    .Where(m => m.Status == "Active")
+                .ToListAsync();
     }
 
     public async Task<List<MagicBag>> GetAllMagicBagsByPartnerId(int partnerId)
     {
         return await context.MagicBags
             .Include(m => m.MagicBagItems)
-                    .Where(m => m.PartnerId == partnerId).ToListAsync();
+                    .Where(m => m.PartnerId == partnerId)
+            .Where(m => m.Status == "Active")
+            .ToListAsync();
     }
 
     public async Task<MagicBag> CreateMagicBag(MagicBag magicBag)
