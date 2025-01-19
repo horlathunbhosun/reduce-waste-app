@@ -1,1 +1,74 @@
-<p>transaction works!</p>
+
+
+<div *ngIf="dataSource">
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+    <!-- Name Column -->
+    <ng-container matColumnDef="magicbag">
+      <th mat-header-cell *matHeaderCellDef> MagicBag </th>
+      <td mat-cell *matCellDef="let element"> {{element?.magicBag.name}} </td>
+    </ng-container>
+
+    <!-- Description Column -->
+    <ng-container matColumnDef="transactionDate">
+      <th mat-header-cell *matHeaderCellDef> Transaction Date </th>
+      <td mat-cell *matCellDef="let element"> {{element?.transactionDate | date}} </td>
+    </ng-container>
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef> Amount </th>
+      <td mat-cell *matCellDef="let element"> $ {{element?.amount}} </td>
+    </ng-container>
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="pickUpDate">
+      <th mat-header-cell *matHeaderCellDef> PickUpDate </th>
+      <td mat-cell *matCellDef="let element">  {{element?.pickUpdateDate | date}} </td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let element"> {{element?.status}} </td>
+    </ng-container>
+
+
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Action </th>
+      <td mat-cell *matCellDef="let element">
+
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item >
+<!--            <mat-icon>edit</mat-icon>-->
+            <span>Rate</span>
+          </button>
+
+        </mat-menu>
+      </td>
+
+    </ng-container>
+
+
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+
+
+
+
+
+
+
+
