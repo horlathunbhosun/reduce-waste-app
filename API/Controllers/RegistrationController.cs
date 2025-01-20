@@ -65,7 +65,6 @@ public class RegistrationController(IUserService userService) : ControllerBase
                 statusCode), statusCode);
     }
     
-    //using from FromQuery if you want to filter 
     
 
 }

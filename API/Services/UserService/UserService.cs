@@ -243,23 +243,13 @@ public class UserService : IUserService
 
      }
 
+     public async Task<GenericResponse> GetAllUsers()
+     {
+         var users = await _userRepository.GetAllUsers();
+         
+         return GenericResponse.FromSuccess(new SuccessResponse("Users found successfully", users.Select(user => user.ToUserResponseDto()).ToList(), StatusCodes.Status200OK), StatusCodes.Status200OK);
+     }
 
-     // public async Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest)
-     // {
-     //     var principal = _tokenService.GetPrincipalFromExpiredToken(refreshTokenRequest.Token);
-     //     if (principal == null)
-     //     {
-     //         throw new NotFoundException("Invalid refresh token");
-     //     }
-     //
-     //     var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
-     //     if (user == null || user.RefreshToken != request.RefreshToken)
-     //     {
-     //         return BadRequest("Invalid refresh token");
-     //     }
-     //
-     //     var newJwtToken = _tokenService.CreateToken(user);
-     // }
      
      
     

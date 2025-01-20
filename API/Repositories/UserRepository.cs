@@ -94,8 +94,13 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
         return user;
     }
-    
-    
+
+    public Task<List<Users>> GetAllUsers()
+    {
+        return _context.Users.Include("Partner").ToListAsync();
+    }
+
+
     //AsQueryable 
  
 

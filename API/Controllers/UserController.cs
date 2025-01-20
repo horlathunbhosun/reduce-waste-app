@@ -39,6 +39,13 @@ public class UserController(IUserService userService) : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
     
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var response = await userService.GetAllUsers();
+        return StatusCode(response.StatusCode, response);
+    }
+    
     
     private string GetEmail()
     {

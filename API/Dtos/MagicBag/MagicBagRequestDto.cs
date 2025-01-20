@@ -12,5 +12,4 @@ public class MagicBagRequestDto
 
     public  int PartnerId { get; set; }
     
-    // public  List<ProductMagicBagItemRequest>? MagicBagItems { get; set; }
 }

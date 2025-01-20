@@ -30,7 +30,6 @@ public static class MagicBagMapper
             Description = magicBagRequestDto.Description,
             BagPrice = magicBagRequestDto.BagPrice,
             PartnerId = magicBagRequestDto.PartnerId,
-           // MagicBagItems = magicBagRequestDto.MagicBagItems?.Select(x => x.ToProductMagicBagItemRequest()).ToList(),
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
         };
@@ -43,7 +42,6 @@ public static class MagicBagMapper
             Name = magicBagRequestDto.Name,
             Description = magicBagRequestDto.Description,
             BagPrice = magicBagRequestDto.BagPrice,
-        // MagicBagItems = magicBagRequestDto.MagicBagItems?.Select(x => x.ToProductMagicBagItemRequest()).ToList(),
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
         };
@@ -71,7 +69,6 @@ public static class MagicBagMapper
             Id = productMagicBagItem.Id,
             Products = productMagicBagItem.Products?.ToProductResponseDto(),
             MagicBagId = (Guid)productMagicBagItem.MagicBagId,
-           //MagicBag = productMagicBagItem.MagicBag?.ToMagicBagResponseDto(),
             Quantity = productMagicBagItem.Quantity,
             CreatedAt = productMagicBagItem.CreatedAt,
             UpdatedAt = productMagicBagItem.UpdatedAt

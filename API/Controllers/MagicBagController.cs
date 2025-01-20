@@ -88,12 +88,6 @@ public class MagicBagController(IMagicBagService magicBagService, IUserService u
 
 
 
-
-    //public async Task<IActionResult> GetMagicBag(Guid id)
-    //{
-    //    var response = await _magicBagService.GetMagicBag(id);
-    //    return StatusCode(response.StatusCode, response);
-    //}
-
+    
 }
 

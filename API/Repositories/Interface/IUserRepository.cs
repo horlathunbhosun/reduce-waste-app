@@ -15,9 +15,12 @@ public interface IUserRepository
 
     Task<Users> CreateUser(Users user,string password);
     
-    //Task<Users> UpdateUser(UpdateUserRequestDto user, string userId);
     
     Task<Users> UpdateUser(Users user);
+    
+    Task<List<Users>> GetAllUsers();
+    
+    
 
     
 }

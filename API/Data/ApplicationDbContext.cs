@@ -13,7 +13,6 @@ public class ApplicationDbContext : IdentityDbContext<Users>
         
     }
     
-   // public DbSet<Users> Users { get; set; }
 
     public DbSet<Partner> Partners { get; set; }
     

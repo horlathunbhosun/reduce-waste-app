@@ -20,7 +20,8 @@ public interface IUserService
     Task<GenericResponse> UserProfile(string email);
     
     Partner GetPartnerByUserId(string userId);
+    
+    Task<GenericResponse> GetAllUsers();
 
-    //Task<GenericResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest);
 
 }

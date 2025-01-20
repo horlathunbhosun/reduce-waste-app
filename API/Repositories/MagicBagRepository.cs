@@ -83,13 +83,9 @@ public class MagicBagRepository(ApplicationDbContext context) : IMagicBagReposit
         magicBagExist.Name = magicBag.Name;
         magicBagExist.Description = magicBag.Description;
         magicBagExist.BagPrice = magicBag.BagPrice;
-        // Update other properties as needed
-        // context.Entry(magicBagExist).CurrentValues.SetValues(magicBag);
-        // context.Entry(magicBagExist).Property(m => m.Id).IsModified = false;
-
+  
         context.MagicBags.Update(magicBagExist);
         await context.SaveChangesAsync();
-        // Console.WriteLine($"MagicBag Updated Successfully: {magicBag.Id}");
         return magicBagExist;
         
     }
