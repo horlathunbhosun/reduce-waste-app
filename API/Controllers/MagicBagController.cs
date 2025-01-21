@@ -84,6 +84,13 @@ public class MagicBagController(IMagicBagService magicBagService, IUserService u
         var response = await magicBagService.CreateProductMagicBagItem(productMagicBagItemRequest);
         return StatusCode(response.StatusCode, response);
     }
+    
+    [HttpGet("get-all-magicbag-items/{id}")]
+    public async Task<IActionResult> GetAllMagicBagItems([FromRoute] Guid id)
+    {
+        var response = await magicBagService.GetProductItems(id);
+        return StatusCode(response.StatusCode, response);
+    }
 
 
 

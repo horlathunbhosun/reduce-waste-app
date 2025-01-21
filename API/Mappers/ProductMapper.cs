@@ -12,8 +12,9 @@ public static class ProductMapper
         {
             Id = product.Id,
             Name = product.Name,
+            
             Description = product.Description,
-            MagicBagItems = product.MagicBagItems,
+            //MagicBagItems = product.MagicBagItems,
             CreatedAt = product.CreatedAt,
             UpdatedAt = product.UpdatedAt
         };

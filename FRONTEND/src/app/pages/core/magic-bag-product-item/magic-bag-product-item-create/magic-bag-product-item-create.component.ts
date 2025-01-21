@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, Optional} from '@angular/core';
 import {MatButton} from "@angular/material/button";
 import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MagicbagService} from "../../../../services/magicbag.service";
 import {ToastrService} from "ngx-toastr";
-import {MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Router, ActivatedRoute} from "@angular/router";
 import {ProductService} from "../../../../services/product.service";
 import {MatOption} from "@angular/material/autocomplete";
@@ -30,18 +30,17 @@ import {CommonModule} from "@angular/common";
   styleUrl: './magic-bag-product-item-create.component.scss'
 })
 export class MagicBagProductItemCreateComponent  implements OnInit {
-  magicBagId: string | null = null;
 
   toppingList: any[] = [];
 
   constructor(private  router: Router ,
-              private route: ActivatedRoute,
 
               private dialog : MatDialog,
+              public dialogRef: MatDialogRef<MagicBagProductItemCreateComponent>, @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
               private toastr: ToastrService, private magicbag : MagicbagService, private productService : ProductService
   ) {
 
-    console.log(this.toppingList)
+    console.log(this.data, 'data')
   }
 
   form = new FormGroup({
@@ -52,11 +51,7 @@ export class MagicBagProductItemCreateComponent  implements OnInit {
 
   ngOnInit(): void {
     this.getAllProducts();
-    this.route.paramMap.subscribe(params => {
-      this.magicBagId = params.get('id');
-      console.log('Magic Bag ID:', this.magicBagId);
-      // You can now use this.magicBagId to fetch data or perform other actions
-    });
+
   }
 
   get f(){
@@ -77,15 +72,15 @@ export class MagicBagProductItemCreateComponent  implements OnInit {
     let usertype = JSON.parse(localStorage.getItem('user') || '{}');
     console.log(usertype)
     const payload = {
-      Name : this.form.controls['quanity'].value,
-      PartnerId :usertype?.partner.partnerId,
-      ProductID: this.form.controls['productID'].value
+      MagicBagId : this.data.magicBagId,
+      ProductID: this.form.controls['productID'].value,
+      quality: this.form.controls['quanity'].value,
 
     }
 
 
 
-    this.magicbag.createBag(payload).subscribe(
+    this.magicbag.createMagicItem(payload).subscribe(
       res => {
 
         this.toastr.success('Magic Bag Created Successfully');

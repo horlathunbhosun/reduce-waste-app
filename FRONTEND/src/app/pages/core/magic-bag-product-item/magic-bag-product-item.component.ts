@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit, Optional} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ToastrService} from "ngx-toastr";
 import {MagicbagService} from "../../../services/magicbag.service";
@@ -8,7 +8,7 @@ import {MatButton, MatButtonModule, MatFabButton} from "@angular/material/button
 import {CdkAccordion} from "@angular/cdk/accordion";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatIconModule} from "@angular/material/icon";
-import {DatePipe, NgIf} from "@angular/common";
+import {DatePipe, NgIf, Location} from "@angular/common";
 import {MagicBagCreateComponent} from "../magic-bag/magic-bag-create/magic-bag-create.component";
 import {
   MagicBagProductItemCreateComponent
@@ -25,11 +25,16 @@ import {
   styleUrl: './magic-bag-product-item.component.scss'
 })
 export class MagicBagProductItemComponent implements OnInit {
-
-  displayedColumns: string[] = ['name', 'description','price', 'status', 'created','action'];
+  magicBagId: string | null = null;
+  displayedColumns: string[] = ['name', 'quantity'];
   dataSourcer: any = [];
 
-  constructor(private  router: Router , private dialog : MatDialog,
+  constructor(private  router: Router ,
+              private route: ActivatedRoute,
+
+              private location: Location,
+
+              private dialog : MatDialog,
               private toastr: ToastrService, private magicbag : MagicbagService,
 
   ) {
@@ -38,12 +43,22 @@ export class MagicBagProductItemComponent implements OnInit {
 
 
   ngOnInit(): void {
-   // this.getAllMagicBags();
+
+    this.route.paramMap.subscribe(params => {
+      this.magicBagId = params.get('id');
+      console.log('Magic Bag ID:', this.magicBagId);
+      // You can now use this.magicBagId to fetch data or perform other actions
+    });
+
+    this.getAllMagicBagsItem();
+
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(MagicBagProductItemCreateComponent, {
-
+      data : {
+        magicBagId : this.magicBagId
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -55,8 +70,15 @@ export class MagicBagProductItemComponent implements OnInit {
   }
 
 
-  getAllMagicBagsItem(element: any) {
+  getAllMagicBagsItem() {
+    this.magicbag.getProductMagicItem(this.magicBagId).subscribe((res : any)  => {
+      console.log(res.success.data)
+      this.dataSourcer = res.success.data;
+    })
 
+  }
 
+  goBack(): void {
+    this.location.back();
   }
 }

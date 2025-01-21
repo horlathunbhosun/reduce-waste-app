@@ -12,6 +12,9 @@ public class ProductMagicBagItemRepository(ApplicationDbContext context) : IProd
     {
         return await context.ProductMagicBagItems.FindAsync(id);   
     }
+    
+    
+    
 
   
 
@@ -35,6 +38,17 @@ public class ProductMagicBagItemRepository(ApplicationDbContext context) : IProd
         context.ProductMagicBagItems.Update(productMagicBagItemExist);
         Console.WriteLine($"Product Magic Bag Item Updated Successfully: {productMagicBagItem.Id}");
         return productMagicBagItemExist;
+    }
+
+    public Task<List<ProductMagicBagItem>> GetProductMagicBagItems(Guid magicBagId)
+    {
+        
+        var productMagicBagItems = context.ProductMagicBagItems.
+            Where(mag => mag.MagicBagId == magicBagId).
+            Include(p => p.Products).
+            ToListAsync();
+        return productMagicBagItems;
+        
     }
 
 

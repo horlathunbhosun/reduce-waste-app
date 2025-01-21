@@ -92,6 +92,19 @@ public class MagicBagService(IMagicBagRepository magicBagRepository, IProductMag
                 StatusCodes.Status200OK), StatusCodes.Status200OK);   
     }
 
+    public async Task<GenericResponse> GetProductItems(Guid id)
+    {
+        var productItems = await productMagicBagItemRepository.GetProductMagicBagItems(id);
+        if (productItems == null)
+        {
+            return GenericResponse.FromError(new ErrorResponse("An Error occured", "No Product Magic Bag Items", StatusCodes.Status400BadRequest), StatusCodes.Status400BadRequest);
+        }
+        
+        return GenericResponse.FromSuccess(
+            new SuccessResponse("Product Magic Bag Items fetched successfully", productItems.Select(productItem => productItem.ToProductMagicBagItemResponse()).ToList(),
+                StatusCodes.Status200OK), StatusCodes.Status200OK);
+    }
+
     public async Task<GenericResponse> GetAllMagicBagsByPartnerId(int partnerId)
     {
         var magicBags = await magicBagRepository.GetAllMagicBagsByPartnerId(partnerId);

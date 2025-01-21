@@ -13,6 +13,8 @@ public interface IMagicBagService
     
     Task<GenericResponse> GetAllMagicBags();
     
+    Task<GenericResponse> GetProductItems(Guid id);
+    
     Task<GenericResponse> GetAllMagicBagsByPartnerId(int partnerId);
 
     Task<GenericResponse> UpdateMagicBag(Guid id,MagicBagRequestDto magicBagRequestDto);

@@ -21,6 +21,23 @@ export class MagicbagService {
   }
 
 
+  createMagicItem(payload : any)  {
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+    return this.Http.post(`${this.baseUrl}/magic-bag/add-magic-bag-item`, payload, {headers})
+  }
+
+  getProductMagicItem(id: string | null) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+    return this.Http.get(`${this.baseUrl}/magic-bag/get-all-magicbag-items/${id}`, {headers}).pipe()
+  }
+
   getPartnerMagicBag() {
     const headers = {
       'Content-Type': 'application/json',
