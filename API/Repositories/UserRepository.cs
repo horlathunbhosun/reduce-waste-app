@@ -100,6 +100,22 @@ public class UserRepository : IUserRepository
         return _context.Users.Include("Partner").ToListAsync();
     }
 
+    [HttpDelete]
+public async Task<IActionResult> DeleteItems([FromBody] DeleteItemsRequest request)
+{
+    // EF Core 7+
+    var deletedCount = await _context.Items
+        .Where(x => request.Ids.Contains(x.Id))
+        .ExecuteDeleteAsync();
+    
+    return Ok(new { DeletedCount = deletedCount });
+}
+
+public class DeleteItemsRequest
+{
+    public List<int> Ids { get; set; } = new();
+}
+
 
     //AsQueryable 
  
