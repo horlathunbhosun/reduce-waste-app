@@ -22,6 +22,11 @@
     <PackageReference Include="Stripe.net" Version="47.3.0-beta.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.Diagnostics.Tools" Version="4.3.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="MimeKit" Version="4.3.0" />
+    <PackageReference Include="Npgsql" Version="8.0.0" />
+    <PackageReference Include="Debezium.Connector.PostgreSQL" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>

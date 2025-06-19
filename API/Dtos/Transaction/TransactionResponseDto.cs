@@ -22,4 +22,7 @@ public class TransactionResponseDto
     public DateTime CreatedAt { get; set; }
     
     public DateTime UpdatedAt { get; set; }
+    
+    // Dynamic columns data
+    public Dictionary<string, object?> DynamicColumns { get; set; } = new();
 }

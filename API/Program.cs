@@ -10,6 +10,7 @@ using API.Services.Product;
 using API.Services.Stripe;
 using API.Services.Token;
 using API.Services.Transactions;
+using API.Services.CDC;
 using API.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -37,11 +38,18 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure PostgreSQL for CDC
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
-    var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
-    var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);
-    options.UseMySql(connectionString, mysqlServerVersion);
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSqlConnection");
+    options.UseNpgsql(connectionString);
 });
+
+// Keep MySQL configuration as fallback/alternative (commented out)
+// builder.Services.AddDbContext<ApplicationDbContext>(options => {
+//     var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+//     var mysqlServerVersion =  ServerVersion.AutoDetect(connectionString);
+//     options.UseMySql(connectionString, mysqlServerVersion);
+// });
 
 //uncomment if you are using SqlServer
 // builder.Services.AddDbContext<ApplicationDbContext>(options => {
@@ -120,6 +128,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Add HttpContextAccessor for enhanced transaction service
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -136,6 +147,10 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+
+// Register CDC Services
+builder.Services.AddScoped<ITransactionCDCService, TransactionCDCService>();
+builder.Services.AddSingleton<IPostgresWALCDCService, PostgresWALCDCService>();
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -155,6 +170,38 @@ builder.Services.AddAuthorization(options =>
 
 
 var app = builder.Build();
+
+// Initialize CDC systems on startup
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    try
+    {
+        // Initialize trigger-based CDC
+        var cdcService = scope.ServiceProvider.GetRequiredService<ITransactionCDCService>();
+        await cdcService.InitializeCDCAsync();
+        logger.LogInformation("Trigger-based CDC system initialized successfully");
+
+        // Initialize WAL-based CDC (conditionally)
+        var walCdcService = scope.ServiceProvider.GetRequiredService<IPostgresWALCDCService>();
+        var startWalCdc = app.Configuration.GetValue<bool>("CDC:StartWALConsumerOnStartup", false);
+        
+        if (startWalCdc)
+        {
+            await walCdcService.StartWALConsumerAsync();
+            logger.LogInformation("WAL-based CDC consumer started successfully");
+        }
+        else
+        {
+            logger.LogInformation("WAL-based CDC consumer startup skipped (set CDC:StartWALConsumerOnStartup=true to enable)");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Failed to initialize CDC systems on startup");
+    }
+}
 
 
 // Configure the HTTP request pipeline.
@@ -181,6 +228,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Graceful shutdown for WAL CDC consumer
+app.Lifetime.ApplicationStopping.Register(() =>
+{
+    using var scope = app.Services.CreateScope();
+    var walCdcService = scope.ServiceProvider.GetRequiredService<IPostgresWALCDCService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    try
+    {
+        if (walCdcService.IsRunning)
+        {
+            walCdcService.StopWALConsumerAsync().Wait(TimeSpan.FromSeconds(30));
+            logger.LogInformation("WAL CDC consumer stopped gracefully");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error stopping WAL CDC consumer during shutdown");
+    }
+});
 
 app.Run();
 

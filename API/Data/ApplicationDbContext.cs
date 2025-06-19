@@ -25,6 +25,11 @@ public class ApplicationDbContext : IdentityDbContext<Users>
     public DbSet<Transactions> Transactions { get; set; }
     
     public DbSet<Feedback> Feedbacks { get; set; }
+    
+    public DbSet<TransactionColumnDefinition> TransactionColumnDefinitions { get; set; }
+    
+    public DbSet<TransactionAuditLog> TransactionAuditLogs { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -114,7 +119,37 @@ public class ApplicationDbContext : IdentityDbContext<Users>
             .HasIndex(p => p.TransactionId)
             .IsUnique();
 
+        // Transaction Audit Log Configuration
+        modelBuilder.Entity<TransactionAuditLog>()
+            .HasKey(p => p.Id);
 
+        modelBuilder.Entity<TransactionAuditLog>()
+            .HasIndex(p => p.TransactionId);
+
+        modelBuilder.Entity<TransactionAuditLog>()
+            .HasIndex(p => p.Timestamp);
+
+        modelBuilder.Entity<TransactionAuditLog>()
+            .HasIndex(p => p.UserId);
+
+        modelBuilder.Entity<TransactionAuditLog>()
+            .HasIndex(p => new { p.TransactionId, p.Timestamp });
+
+        modelBuilder.Entity<TransactionAuditLog>()
+            .HasOne(p => p.Transaction)
+            .WithMany()
+            .HasForeignKey(p => p.TransactionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TransactionAuditLog>()
+            .Property(p => p.Operation)
+            .IsRequired()
+            .HasMaxLength(10);
+
+        modelBuilder.Entity<TransactionAuditLog>()
+            .Property(p => p.ChangeSource)
+            .HasDefaultValue("APPLICATION")
+            .HasMaxLength(50);
         
         
        
